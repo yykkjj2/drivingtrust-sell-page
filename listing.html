@@ -1,49 +1,58 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>DrivingTrust - Car Listings</title>
-<style>
-  body { font-family: Arial; background: #f4f6f9; padding: 20px; }
-  h1 { text-align: center; color: #003A75; }
-  .car { 
-    background: #fff; 
-    padding: 15px; 
-    border-radius: 8px; 
-    margin-bottom: 15px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-  }
-  a { text-decoration: none; color: #003A75; }
-</style>
+  <meta charset="UTF-8" />
+  <title>Car Listings</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .car-card {
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .car-card:hover {
+      background-color: #f0f0f0;
+    }
+  </style>
 </head>
 <body>
 
-<h1>DrivingTrust - Car Listings</h1>
-<div id="list"></div>
+  <h1>Car Listings</h1>
+  <div id="listings"></div>
 
-<script>
-async function loadCars() {
-  const res = await fetch("/api/getCars");
-  const cars = await res.json();
-  const list = document.getElementById("list");
+  <script>
+    async function loadCars() {
+      const res = await fetch("/api/getCars");
+      const cars = await res.json();
+      const container = document.getElementById("listings");
 
-  cars.forEach(c => {
-    const div = document.createElement("div");
-    div.className = "car";
+      if (cars.length === 0) {
+        container.innerHTML = "<p>No cars listed yet.</p>";
+        return;
+      }
 
-    div.innerHTML = `
-      <h3><a href="car.html?id=${c.id}">${c.car}</a></h3>
-      <p><b>City:</b> ${c.city}</p>
-      <p><b>Mileage:</b> ${c.mileage} km</p>
-      <p><b>Price:</b> ${c.price}</p>
-    `;
+      cars.forEach(car => {
+        const div = document.createElement("div");
+        div.className = "car-card";
+        div.innerHTML = `
+          <strong>${car.car}</strong><br>
+          City: ${car.city}<br>
+          Mileage: ${car.mileage} km<br>
+          Price: ${car.price}
+        `;
 
-    list.appendChild(div);
-  });
-}
+        div.onclick = () => {
+          window.location.href = "/car?id=" + car.id;
+        };
 
-loadCars();
-</script>
+        container.appendChild(div);
+      });
+    }
+
+    loadCars();
+  </script>
 
 </body>
 </html>
