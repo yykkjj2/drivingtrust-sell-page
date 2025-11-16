@@ -1,47 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>DrivingTrust - Car Details</title>
-
-<style>
-  body { font-family: Arial; background: #f4f6f9; padding: 20px; }
-  .box { 
-    background: #fff; 
-    padding: 20px; 
-    border-radius: 10px;
-    max-width: 600px; 
-    margin:auto; 
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  }
-  h2 { color:#003A75; }
-</style>
-
+  <meta charset="UTF-8" />
+  <title>Car Details</title>
+  <style>
+    body { font-family: Arial; padding: 20px; line-height: 1.6; }
+  </style>
 </head>
 <body>
 
-<div class="box" id="carBox">Loading...</div>
+<h1>Car Details</h1>
+<div id="details">Loading...</div>
 
 <script>
-async function loadCar() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const id = urlParams.get("id");
+  function getQueryParam(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
 
-  const res = await fetch("/api/getCar?id=" + id);
-  const c = await res.json();
+  async function loadCar() {
+    const id = getQueryParam("id");
+    if (!id) {
+      document.getElementById("details").innerHTML = "No car ID provided.";
+      return;
+    }
 
-  document.getElementById("carBox").innerHTML = `
-    <h2>${c.car}</h2>
-    <p><b>City:</b> ${c.city}</p>
-    <p><b>Mileage:</b> ${c.mileage} km</p>
-    <p><b>Accident:</b> ${c.accident}</p>
-    <p><b>Inspection:</b> ${c.inspection}</p>
-    <p><b>Price:</b> ${c.price}</p>
-    <p><b>Notes:</b> ${c.notes}</p>
-  `;
-}
+    const res = await fetch("/api/getCar?id=" + id);
+    const data = await res.json();
 
-loadCar();
+    if (!data) {
+      document.getElementById("details").innerHTML = "Car not found.";
+      return;
+    }
+
+    const car = data;
+    document.getElementById("details").innerHTML = `
+      <h2>${car.car}</h2>
+      <p><strong>Seller:</strong> ${car.name} (${car.phone})</p>
+      <p><strong>City:</strong> ${car.city}</p>
+      <p><strong>Mileage:</strong> ${car.mileage}</p>
+      <p><strong>Accident:</strong> ${car.accident}</p>
+      <p><strong>Inspection:</strong> ${car.inspection}</p>
+      <p><strong>Price:</strong> ${car.price}</p>
+      <p><strong>Notes:</strong> ${car.notes}</p>
+    `;
+  }
+
+  loadCar();
 </script>
 
 </body>
