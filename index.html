@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DrivingTrust — Safer C2C Car Selling</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f2f6fa; padding: 20px; }
+  .container { max-width: 650px; margin: auto; background: #ffffff; padding: 30px;
+    border-radius: 12px; box-shadow: 0 4px 18px rgba(0,0,0,0.08); }
+  .logo { font-size: 32px; font-weight: bold; text-align: center; color: #003A75; margin-bottom: 10px; }
+  h2 { text-align: center; color: #003A75; margin-top: 0; }
+  label { display: block; font-weight: bold; margin-top: 15px; }
+  input, select, textarea {
+    width: 100%; padding: 12px; margin-top: 6px;
+    border: 1px solid #ccd7e0; border-radius: 6px;
+  }
+  button {
+    margin-top: 22px; width: 100%; padding: 14px;
+    background: #003A75; color: #fff; font-size: 17px;
+    border: none; border-radius: 6px; cursor: pointer;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="logo">DrivingTrust</div>
+  <h2>Safer C2C Car Selling</h2>
+
+  <form id="sellForm">
+    <label>Full Name / 姓名</label>
+    <input type="text" name="name" required />
+
+    <label>Phone Number / 电话</label>
+    <input type="text" name="phone" required />
+
+    <label>City / 城市</label>
+    <select name="city" required>
+      <option value="Richmond">Richmond</option>
+      <option value="Vancouver">Vancouver</option>
+      <option value="Burnaby">Burnaby</option>
+      <option value="Surrey">Surrey</option>
+    </select>
+
+    <label>Car Details / 车辆信息</label>
+    <input type="text" name="car" placeholder="e.g. 2018 Toyota RAV4" required />
+
+    <label>Mileage (km) / 里程</label>
+    <input type="number" name="mileage" required />
+
+    <label>Accident History? / 是否有事故</label>
+    <select name="accident">
+      <option value="No">No / 无</option>
+      <option value="Yes">Yes / 有</option>
+    </select>
+
+    <label>Accept platform inspection? / 是否接受平台验车</label>
+    <select name="inspection">
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
+    </select>
+
+    <label>Expected Price / 期望售价</label>
+    <input type="text" name="price" />
+
+    <label>Additional Notes / 备注</label>
+    <textarea name="notes"></textarea>
+
+    <button type="submit">Submit / 提交</button>
+  </form>
+
+  <script>
+    document.getElementById("sellForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const data = Object.fromEntries(new FormData(form).entries());
+
+      const res = await fetch("/api/addCar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+      alert(result.message || "Submitted!");
+      form.reset();
+    });
+  </script>
+
+</div>
+</body>
+</html>
