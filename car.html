@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>DrivingTrust - Car Details</title>
+
+<style>
+  body { font-family: Arial; background: #f4f6f9; padding: 20px; }
+  .box { 
+    background: #fff; 
+    padding: 20px; 
+    border-radius: 10px;
+    max-width: 600px; 
+    margin:auto; 
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  h2 { color:#003A75; }
+</style>
+
+</head>
+<body>
+
+<div class="box" id="carBox">Loading...</div>
+
+<script>
+async function loadCar() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const id = urlParams.get("id");
+
+  const res = await fetch("/api/getCar?id=" + id);
+  const c = await res.json();
+
+  document.getElementById("carBox").innerHTML = `
+    <h2>${c.car}</h2>
+    <p><b>City:</b> ${c.city}</p>
+    <p><b>Mileage:</b> ${c.mileage} km</p>
+    <p><b>Accident:</b> ${c.accident}</p>
+    <p><b>Inspection:</b> ${c.inspection}</p>
+    <p><b>Price:</b> ${c.price}</p>
+    <p><b>Notes:</b> ${c.notes}</p>
+  `;
+}
+
+loadCar();
+</script>
+
+</body>
+</html>
