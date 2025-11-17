@@ -1,3 +1,4 @@
+// api/uploadImage.js
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -11,47 +12,45 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { base64, carId } = req.body;
-    if (!base64 || !carId) {
-      return res.status(400).json({ error: "Missing base64 or carId" });
+    const { fileName, fileBase64 } = req.body || {};
+
+    if (!fileName || !fileBase64) {
+      return res
+        .status(400)
+        .json({ error: "Missing fileName or fileBase64 in body" });
     }
 
-    // Convert base64 to buffer
-    const base64Data = base64.replace(/^data:image\/\w+;base64,/, "");
-    const buffer = Buffer.from(base64Data, "base64");
+    // 把 base64 转成二进制
+    const buffer = Buffer.from(fileBase64, "base64");
 
-    const fileName = `car_${carId}_${Date.now()}.jpg`;
+    const ext = fileName.split(".").pop() || "jpg";
+    const path = `cars/${Date.now()}-${Math.random()
+      .toString(36)
+      .slice(2)}.${ext}`;
 
-    // Upload to Supabase storage
-    const { data, error } = await supabase.storage
+    // 上传到你创建的 bucket，比如 car-images
+    const { error: uploadError } = await supabase.storage
       .from("car-images")
-      .upload(fileName, buffer, {
-        contentType: "image/jpeg",
+      .upload(path, buffer, {
+        contentType: `image/${ext}`,
         upsert: false,
       });
 
-    if (error) {
-      return res.status(500).json({ error: error.message });
+    if (uploadError) {
+      console.error("Upload error:", uploadError);
+      return res.status(500).json({ error: uploadError.message });
     }
 
-    // Get public URL
-    const { data: urlData } = supabase.storage
+    // 获取公开 URL（supabase-js v2 写法）
+    const { data: publicData } = supabase.storage
       .from("car-images")
-      .getPublicUrl(fileName);
+      .getPublicUrl(path);
 
-    // Save URL into database
-    await supabase
-      .from("cars")
-      .update({
-        images: supabase.rpc("append_image", {
-          image_url: urlData.publicUrl,
-          car_row_id: carId,
-        }),
-      })
-      .eq("id", carId);
+    const publicUrl = publicData.publicUrl;
 
-    res.status(200).json({ url: urlData.publicUrl });
+    return res.status(200).json({ url: publicUrl });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("uploadImage handler error:", err);
+    return res.status(500).json({ error: "Unexpected server error" });
   }
 }
