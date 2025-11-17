@@ -3,150 +3,301 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>DrivingTrust — Safer C2C Car Selling</title>
+<title>DrivingTrust — Find Your Next Car</title>
+
 <style>
-  body { font-family: Arial, sans-serif; background: #f2f6fa; padding: 20px; }
-  .container { max-width: 650px; margin: auto; background: #ffffff; padding: 30px;
-    border-radius: 12px; box-shadow: 0 4px 18px rgba(0,0,0,0.08); }
-  .logo { font-size: 32px; font-weight: bold; text-align: center; color: #003A75; margin-bottom: 10px; }
-  h2 { text-align: center; color: #003A75; margin-top: 0; }
-  label { display: block; font-weight: bold; margin-top: 15px; }
-  input, select, textarea {
-    width: 100%; padding: 12px; margin-top: 6px;
-    border: 1px solid #ccd7e0; border-radius: 6px;
+  :root {
+    --primary: #003a75;
+    --secondary: #1c5db5;
+    --bg: #f5f7fa;
+    --text-main: #1f2937;
+    --text-light: #6b7280;
+    --shadow: 0 6px 20px rgba(0,0,0,0.08);
+    --radius: 12px;
   }
-  button {
-    margin-top: 22px; width: 100%; padding: 14px;
-    background: #003A75; color: #fff; font-size: 17px;
-    border: none; border-radius: 6px; cursor: pointer;
+
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text-main);
+  }
+
+  /* NAVBAR */
+  .navbar {
+    background: white;
+    padding: 16px 26px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+  .nav-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 22px;
+    font-weight: bold;
+    color: var(--primary);
+  }
+  .nav-right a {
+    margin-left: 20px;
+    font-weight: 600;
+    color: var(--primary);
+    text-decoration: none;
+  }
+  .nav-right a:hover {
+    text-decoration: underline;
+  }
+
+  /* HERO */
+  .hero {
+    background: white;
+    padding: 50px 20px 70px;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .hero h1 {
+    font-size: 38px;
+    margin-bottom: 10px;
+    color: var(--primary);
+  }
+  .hero p {
+    font-size: 18px;
+    color: var(--text-light);
+  }
+
+  /* SEARCH BAR */
+  .search-box {
+    max-width: 800px;
+    margin: 30px auto 0;
+    display: flex;
+    gap: 10px;
+    background: #ffffff;
+    padding: 18px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .search-box input, .search-box select {
+    flex: 1;
+    padding: 14px;
+    border: 1px solid #d1d5db;
+    border-radius: var(--radius);
+    font-size: 14px;
+  }
+  .search-btn {
+    background: var(--primary);
+    color: white;
+    padding: 14px 24px;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .search-btn:hover {
+    background: #00468f;
+  }
+
+  /* BRAND ICON GRID */
+  .brands {
+    max-width: 900px;
+    margin: 40px auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    text-align: center;
+    gap: 20px;
+  }
+  .brand-item {
+    background: white;
+    padding: 20px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .brand-item:hover {
+    background: #eef5ff;
+  }
+
+  /* LISTINGS */
+  .section-title {
+    max-width: 1100px;
+    margin: 40px auto 10px;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  .car-grid {
+    max-width: 1100px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 22px;
+    padding-bottom: 50px;
+  }
+  .car-card {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .car-card:hover {
+    transform: translateY(-4px);
+  }
+  .car-thumb {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+  .car-info {
+    padding: 16px;
+  }
+  .car-info h3 {
+    margin: 0;
+    font-size: 18px;
+    color: var(--primary);
+  }
+  .car-info .row {
+    margin-top: 6px;
+    color: var(--text-light);
+  }
+  .price {
+    margin-top: 10px;
+    font-size: 20px;
+    color: #059669;
+    font-weight: bold;
   }
 </style>
 </head>
+
 <body>
-<div class="container">
-  <div class="logo">DrivingTrust</div>
-  <h2>Safer C2C Car Selling</h2>
 
-  <form id="sellForm">
-    <label>Full Name / 姓名</label>
-    <input type="text" name="name" required />
+<!-- NAVBAR -->
+<div class="navbar">
+  <div class="nav-left">DrivingTrust</div>
+  <div class="nav-right">
+    <a href="/">Browse Cars</a>
+    <a href="/sell.html">Sell My Car</a>
+    <a href="/admin">Admin</a>
+  </div>
+</div>
 
-    <label>Phone Number / 电话</label>
-    <input type="text" name="phone" required />
+<!-- HERO -->
+<div class="hero">
+  <h1>Find Your Next Car</h1>
+  <p>The safest C2C platform in Canada</p>
 
-    <label>City / 城市</label>
-    <select name="city" required>
-      <option value="Richmond">Richmond</option>
-      <option value="Vancouver">Vancouver</option>
-      <option value="Burnaby">Burnaby</option>
-      <option value="Surrey">Surrey</option>
+  <!-- SEARCH -->
+  <div class="search-box">
+    <input id="search-input" type="text" placeholder="Search by brand, model, city, seller..." />
+    <select id="city-select">
+      <option value="all">All Cities</option>
+      <option>Richmond</option>
+      <option>Vancouver</option>
+      <option>Burnaby</option>
+      <option>Surrey</option>
+    </select>
+    <select id="price-select">
+      <option value="all">Any Price</option>
+      <option value="20000">Below 20k</option>
+      <option value="30000">Below 30k</option>
+      <option value="40000">Below 40k</option>
+      <option value="50000">Below 50k</option>
     </select>
 
-    <label>Car Details / 车辆信息</label>
-    <input type="text" name="car" placeholder="e.g. 2018 Toyota RAV4" required />
+    <button class="search-btn" onclick="applySearch()">Search</button>
+  </div>
+</div>
 
-    <label>Mileage (km) / 里程</label>
-    <input type="number" name="mileage" required />
+<!-- POPULAR BRANDS -->
+<h2 class="section-title">Popular Brands</h2>
+<div class="brands">
+  <div class="brand-item" onclick="filterBrand('Toyota')">Toyota</div>
+  <div class="brand-item" onclick="filterBrand('Honda')">Honda</div>
+  <div class="brand-item" onclick="filterBrand('BMW')">BMW</div>
+  <div class="brand-item" onclick="filterBrand('Mercedes')">Mercedes</div>
+  <div class="brand-item" onclick="filterBrand('Audi')">Audi</div>
+  <div class="brand-item" onclick="filterBrand('Lexus')">Lexus</div>
+</div>
 
-    <label>Accident History? / 是否有事故</label>
-    <select name="accident">
-      <option value="No">No / 无</option>
-      <option value="Yes">Yes / 有</option>
-    </select>
+<!-- LATEST LISTINGS -->
+<h2 class="section-title">Latest Listings</h2>
+<div id="car-list" class="car-grid"></div>
 
-    <label>Accept platform inspection? / 是否接受平台验车</label>
-    <select name="inspection">
-      <option value="Yes">Yes</option>
-      <option value="No">No</option>
-    </select>
-
-    <label>Expected Price / 期望售价</label>
-    <input type="text" name="price" />
-
-    <label>Upload Images / 上传车辆图片</label>
-    <input type="file" id="images" multiple accept="image/*" />
-
-    <label>Additional Notes / 备注</label>
-    <textarea name="notes"></textarea>
-
-    <button type="submit">Submit / 提交</button>
-  </form>
 
 <script>
-  // ① 工具函数：File → Base64
-  function fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        // 形如 "data:image/jpeg;base64,xxxxxx"，只取逗号后面的部分
-        const base64 = reader.result.split(",")[1];
-        resolve(base64);
-      };
-      reader.onerror = (err) => reject(err);
-    });
-  }
+// 载入车辆
+let ALL_CARS = [];
 
-  const form = document.getElementById("sellForm");
+async function loadCars() {
+  const res = await fetch("/api/getCars");
+  ALL_CARS = await res.json();
+  renderCars(ALL_CARS);
+}
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+function renderCars(list) {
+  const container = document.getElementById("car-list");
+  container.innerHTML = "";
 
-    // 原来就有的：收集表单字段
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
+  list.forEach(car => {
+    const img = car.images?.[0] || "https://placehold.co/600x400?text=No+Image";
 
-    // 根据你原来的写法，如果有：
-    if (data.mileage) {
-      data.mileage = Number(data.mileage);
-    }
+    const card = document.createElement("div");
+    card.className = "car-card";
+    card.onclick = () => window.location.href = "/car.html?id=" + car.id;
 
-    // ② 新增：处理图片文件
-    const files = document.getElementById("images").files;
-    const imageUrls = [];
+    card.innerHTML = `
+      <img class="car-thumb" src="${img}">
+      <div class="car-info">
+        <h3>${car.car}</h3>
+        <div class="row">City: ${car.city}</div>
+        <div class="row">Mileage: ${car.mileage} km</div>
+        <div class="row">Seller: ${car.name}</div>
+        <div class="price">$${car.price}</div>
+      </div>
+    `;
 
-    for (let file of files) {
-      const base64 = await fileToBase64(file);
-
-      const res = await fetch("/api/uploadImage", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fileName: file.name,
-          fileBase64: base64,
-        }),
-      });
-
-      const result = await res.json();
-      if (result.url) {
-        imageUrls.push(result.url);
-      }
-    }
-
-    // 把图片 URL 数组放进 data
-    data.images = imageUrls;
-
-    // ③ 保留你之前的 addCar 调用，只是在 body 里用新 data
-    const res2 = await fetch("/api/addCar", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    const result2 = await res2.json();
-
-    if (res2.ok) {
-      alert("Submitted! 已提交");
-      form.reset();
-    } else {
-      alert("提交失败：" + (result2.error?.message || "Unknown error"));
-    }
+    container.appendChild(card);
   });
+}
+
+function applySearch() {
+  const keyword = document.getElementById("search-input").value.toLowerCase();
+  const city = document.getElementById("city-select").value;
+  const maxPrice = document.getElementById("price-select").value;
+
+  let filtered = ALL_CARS.filter(car => {
+    const matchKeyword =
+      car.car.toLowerCase().includes(keyword) ||
+      car.city.toLowerCase().includes(keyword) ||
+      car.name.toLowerCase().includes(keyword);
+
+    const matchCity = (city === "all") || (car.city === city);
+
+    const matchPrice =
+      maxPrice === "all" || Number(car.price) <= Number(maxPrice);
+
+    return matchKeyword && matchCity && matchPrice;
+  });
+
+  renderCars(filtered);
+}
+
+function filterBrand(brand) {
+  const filtered = ALL_CARS.filter(car =>
+    car.car.toLowerCase().includes(brand.toLowerCase())
+  );
+  renderCars(filtered);
+}
+
+loadCars();
 </script>
 
-
-</div>
 </body>
 </html>
