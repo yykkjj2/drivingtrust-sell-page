@@ -1,58 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Car Listings</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    .car-card {
-      border: 1px solid #ccc;
-      padding: 15px;
-      margin-bottom: 10px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .car-card:hover {
-      background-color: #f0f0f0;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DrivingTrust - Car Listings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .car-card {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        .car-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+
+        .status {
+            font-size: 14px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            color: #fff;
+            float: right;
+        }
+
+        .pending { background: #f0ad4e; }   /* 黄色 */
+        .active  { background: #5cb85c; }   /* 绿色 */
+        .sold    { background: #d9534f; }   /* 红色 */
+
+        .line {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+    </style>
 </head>
+
 <body>
 
-  <h1>Car Listings</h1>
-  <div id="listings"></div>
+    <h1>Car Listings</h1>
+    <div class="container" id="car-list"></div>
 
-  <script>
-    async function loadCars() {
-      const res = await fetch("/api/getCars");
-      const cars = await res.json();
-      const container = document.getElementById("listings");
+    <script>
+        async function loadCars() {
+            try {
+                const res = await fetch("/api/getCars");
+                const cars = await res.json();
 
-      if (cars.length === 0) {
-        container.innerHTML = "<p>No cars listed yet.</p>";
-        return;
-      }
+                const container = document.getElementById("car-list");
+                container.innerHTML = "";
 
-      cars.forEach(car => {
-        const div = document.createElement("div");
-        div.className = "car-card";
-        div.innerHTML = `
-          <strong>${car.car}</strong><br>
-          City: ${car.city}<br>
-          Mileage: ${car.mileage} km<br>
-          Price: ${car.price}
-        `;
+                if (!cars.length) {
+                    container.innerHTML = "<p>No cars listed yet.</p>";
+                    return;
+                }
 
-        div.onclick = () => {
-          window.location.href = "/car?id=" + car.id;
-        };
+                cars.forEach(car => {
+                    const statusClass = 
+                        car.status?.toLowerCase() === "pending" ? "pending" :
+                        car.status?.toLowerCase() === "sold" ? "sold" : "active";
 
-        container.appendChild(div);
-      });
-    }
+                    const card = `
+                        <div class="car-card">
+                            <span class="status ${statusClass}">
+                                ${car.status || "Active"}
+                            </span>
 
-    loadCars();
-  </script>
+                            <div class="car-title">${car.car}</div>
+
+                            <div class="line"><b>City:</b> ${car.city}</div>
+                            <div class="line"><b>Mileage:</b> ${car.mileage} km</div>
+                            <div class="line"><b>Accident:</b> ${car.accident}</div>
+                            <div class="line"><b>Inspection:</b> ${car.inspection}</div>
+                            <div class="line"><b>Price:</b> $${car.price}</div>
+                            <div class="line"><b>Notes:</b> ${car.notes || "-"}</div>
+                        </div>
+                    `;
+                    container.innerHTML += card;
+                });
+
+            } catch (err) {
+                console.error("Error loading cars:", err);
+            }
+        }
+
+        loadCars();
+    </script>
 
 </body>
 </html>
