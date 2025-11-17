@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Edit My Listing — DrivingTrust</title>
+
+<style>
+  body {
+    font-family: system-ui, Arial, sans-serif;
+    background: #f3f6fb;
+    margin: 0;
+    padding: 0;
+    color: #333;
+  }
+
+  .container {
+    max-width: 700px;
+    margin: 40px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+  }
+
+  h1 {
+    font-size: 26px;
+    margin-bottom: 10px;
+    color: #0b4ee6;
+  }
+  p {
+    color: #555;
+    margin-bottom: 20px;
+  }
+
+  label {
+    font-weight: 600;
+    margin-top: 12px;
+    display: block;
+  }
+  input, select, textarea {
+    width: 100%;
+    padding: 10px 12px;
+    margin-top: 6px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    font-size: 15px;
+  }
+  textarea { height: 120px; }
+
+  .btn {
+    background: #0b4ee6;
+    color: white;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    margin-top: 20px;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  .btn:hover { background: #0a46cf; }
+
+  /* Image preview */
+  .img-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .img-box {
+    position: relative;
+  }
+  .img-box img {
+    width: 110px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+  .delete-img {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 20px;
+    height: 20px;
+    background: red;
+    color: white;
+    font-size: 14px;
+    border-radius: 50%;
+    cursor: pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+</style>
+</head>
+
+<body>
+<div class="container">
+  <h1>Edit My Listing</h1>
+  <p>You can update your car details below. Only you (with the correct link) can access and modify this listing.</p>
+
+  <form id="editForm">
+
+    <label>Name</label>
+    <input type="text" id="name">
+
+    <label>Phone</label>
+    <input type="text" id="phone">
+
+    <label>City</label>
+    <select id="city">
+      <option value="Richmond">Richmond</option>
+      <option value="Vancouver">Vancouver</option>
+      <option value="Burnaby">Burnaby</option>
+      <option value="Surrey">Surrey</option>
+      <option value="Coquitlam">Coquitlam</option>
+    </select>
+
+    <label>Car Title (e.g. 2020 Toyota RAV4)</label>
+    <input type="text" id="car">
+
+    <label>Mileage (km)</label>
+    <input type="number" id="mileage">
+
+    <label>Accident History</label>
+    <select id="accident">
+      <option value="No">No</option>
+      <option value="Yes">Yes</option>
+    </select>
+
+    <label>Accept Platform Inspection?</label>
+    <select id="inspection">
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
+    </select>
+
+    <label>Expected Price (CAD)</label>
+    <input type="number" id="price">
+
+    <label>Images</label>
+    <input type="file" id="imageInput" multiple accept="image/*" />
+
+    <div id="imgPreview" class="img-row"></div>
+
+    <label>Notes</label>
+    <textarea id="notes"></textarea>
+
+    <button type="button" class="btn" onclick="submitEdit()">Save Changes</button>
+  </form>
+</div>
+
+<script>
+// === Get URL params ===
+const url = new URLSearchParams(window.location.search);
+const carId = url.get("id");
+const token = url.get("token");
+
+// === Existing images array ===
+let CURRENT_IMAGES = [];
+
+// === 1. Load existing data ===
+async function loadCar() {
+  const res = await fetch(`/api/getCar?id=${carId}`);
+  const data = await res.json();
+
+  document.getElementById("name").value = data.name || "";
+  document.getElementById("phone").value = data.phone || "";
+  document.getElementById("city").value = data.city || "";
+  document.getElementById("car").value = data.car || "";
+  document.getElementById("mileage").value = data.mileage || "";
+  document.getElementById("accident").value = data.accident || "No";
+  document.getElementById("inspection").value = data.inspection || "Yes";
+  document.getElementById("price").value = data.price || "";
+  document.getElementById("notes").value = data.notes || "";
+
+  CURRENT_IMAGES = data.images || [];
+  renderImages();
+}
+
+// === Render existing images ===
+function renderImages() {
+  const box = document.getElementById("imgPreview");
+  box.innerHTML = "";
+
+  CURRENT_IMAGES.forEach((img, idx) => {
+    const div = document.createElement("div");
+    div.className = "img-box";
+    div.innerHTML = `
+      <img src="${img}">
+      <div class="delete-img" onclick="deleteImage(${idx})">×</div>
+    `;
+    box.appendChild(div);
+  });
+}
+
+// === Delete image from local array ===
+function deleteImage(i) {
+  CURRENT_IMAGES.splice(i, 1);
+  renderImages();
+}
+
+// === Upload images to Supabase storage ===
+async function uploadImages(files) {
+  const uploaded = [];
+  for (const file of files) {
+    const form = new FormData();
+    form.append("file", file);
+
+    const res = await fetch("/api/uploadImage", {
+      method: "POST",
+      body: form,
+    });
+
+    const data = await res.json();
+    if (data.url) uploaded.push(data.url);
+  }
+  return uploaded;
+}
+
+// === Submit Edit ===
+async function submitEdit() {
+  const newFiles = document.getElementById("imageInput").files;
+  let uploadedImages = [];
+
+  if (newFiles.length > 0) {
+    uploadedImages = await uploadImages(newFiles);
+  }
+
+  const finalImages = [...CURRENT_IMAGES, ...uploadedImages];
+
+  const updatedData = {
+    name: document.getElementById("name").value,
+    phone: document.getElementById("phone").value,
+    city: document.getElementById("city").value,
+    car: document.getElementById("car").value,
+    mileage: document.getElementById("mileage").value,
+    accident: document.getElementById("accident").value,
+    inspection: document.getElementById("inspection").value,
+    price: document.getElementById("price").value,
+    notes: document.getElementById("notes").value,
+    images: finalImages
+  };
+
+  const res = await fetch("/api/updateCar", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "edit-token": token
+    },
+    body: JSON.stringify({
+      id: carId,
+      data: updatedData
+    })
+  });
+
+  const result = await res.json();
+  if (result.success) {
+    alert("Your listing has been updated successfully!");
+    window.location.reload();
+  } else {
+    alert("Update failed: " + result.error);
+  }
+}
+
+loadCar();
+</script>
+
+</body>
+</html>
