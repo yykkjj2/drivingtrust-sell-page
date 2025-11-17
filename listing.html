@@ -1,110 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DrivingTrust - Car Listings</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            margin: 0;
-            padding: 20px;
-        }
-
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .car-card {
-            background: #fff;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-        }
-
-        .car-title {
-            font-size: 20px;
-            font-weight: bold;
-            color: #1a1a1a;
-        }
-
-        .status {
-            font-size: 14px;
-            padding: 4px 10px;
-            border-radius: 6px;
-            color: #fff;
-            float: right;
-        }
-
-        .pending { background: #f0ad4e; }   /* 黄色 */
-        .active  { background: #5cb85c; }   /* 绿色 */
-        .sold    { background: #d9534f; }   /* 红色 */
-
-        .line {
-            margin: 5px 0;
-            font-size: 14px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DrivingTrust - Car Listings</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 900px; margin: 20px auto; }
+    h1 { text-align: center; }
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 10px;
+      margin-bottom: 15px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .thumb {
+      width: 140px;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 4px;
+      background: #f2f2f2;
+      flex-shrink: 0;
+    }
+    .info h2 { margin: 0 0 5px; font-size: 18px; }
+    .info p { margin: 2px 0; font-size: 14px; }
+  </style>
 </head>
-
 <body>
+  <h1>Car Listings</h1>
 
-    <h1>Car Listings</h1>
-    <div class="container" id="car-list"></div>
+  <div id="list"></div>
 
-    <script>
-        async function loadCars() {
-            try {
-                const res = await fetch("/api/getCars");
-                const cars = await res.json();
+  <script>
+    async function loadCars() {
+      const res = await fetch("/api/getCars");
+      const cars = await res.json();
 
-                const container = document.getElementById("car-list");
-                container.innerHTML = "";
+      const list = document.getElementById("list");
+      list.innerHTML = "";
 
-                if (!cars.length) {
-                    container.innerHTML = "<p>No cars listed yet.</p>";
-                    return;
-                }
+      const visibleCars = cars.filter(c => c.status === "approved");
 
-                cars.forEach(car => {
-                    const statusClass = 
-                        car.status?.toLowerCase() === "pending" ? "pending" :
-                        car.status?.toLowerCase() === "sold" ? "sold" : "active";
+      if (!visibleCars.length) {
+        list.textContent = "No approved cars yet.";
+        return;
+      }
 
-                    const card = `
-                        <div class="car-card">
-                            <span class="status ${statusClass}">
-                                ${car.status || "Active"}
-                            </span>
+      visibleCars.forEach(car => {
+        const card = document.createElement("div");
+        card.className = "card";
 
-                            <div class="car-title">${car.car}</div>
+        const firstImage =
+          car.images && Array.isArray(car.images) && car.images.length > 0
+            ? car.images[0]
+            : null;
 
-                            <div class="line"><b>City:</b> ${car.city}</div>
-                            <div class="line"><b>Mileage:</b> ${car.mileage} km</div>
-                            <div class="line"><b>Accident:</b> ${car.accident}</div>
-                            <div class="line"><b>Inspection:</b> ${car.inspection}</div>
-                            <div class="line"><b>Price:</b> $${car.price}</div>
-                            <div class="line"><b>Notes:</b> ${car.notes || "-"}</div>
-                        </div>
-                    `;
-                    container.innerHTML += card;
-                });
+        card.innerHTML = `
+          ${
+            firstImage
+              ? `<img class="thumb" src="${firstImage}" alt="${car.car}">`
+              : `<div class="thumb"></div>`
+          }
+          <div class="info">
+            <h2>${car.car}</h2>
+            <p>Owner: ${car.name}</p>
+            <p>City: ${car.city}</p>
+            <p>Mileage: ${car.mileage} km</p>
+            <p>Price: ${car.price}</p>
+          </div>
+        `;
 
-            } catch (err) {
-                console.error("Error loading cars:", err);
-            }
-        }
+        list.appendChild(card);
+      });
+    }
 
-        loadCars();
-    </script>
-
+    loadCars();
+  </script>
 </body>
 </html>
