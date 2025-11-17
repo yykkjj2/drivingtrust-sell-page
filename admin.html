@@ -2,516 +2,168 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>DrivingTrust - Admin Panel</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DrivingTrust Admin Panel</title>
   <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f4f5f7;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background: #0d47a1;
-      color: #fff;
-      padding: 16px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 20px;
-    }
-    header .env-tag {
-      font-size: 12px;
-      background: rgba(0,0,0,0.2);
-      padding: 4px 8px;
-      border-radius: 999px;
-    }
-    main {
-      padding: 16px 24px 40px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    .toolbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    .toolbar-left {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .toolbar-right {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    button, select {
-      border-radius: 999px;
-      border: 1px solid #cfd8dc;
-      padding: 6px 12px;
-      font-size: 13px;
-      cursor: pointer;
-      background: #fff;
-    }
-    button.primary {
-      background: #0d47a1;
-      color: #fff;
-      border-color: #0d47a1;
-    }
-    button.outline {
-      background: #fff;
-      color: #0d47a1;
-      border-color: #0d47a1;
-    }
-    button.danger {
-      background: #ff5252;
-      color: #fff;
-      border-color: #ff5252;
-    }
-    button:disabled {
-      opacity: 0.5;
-      cursor: default;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #fff;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
-    }
-    thead {
-      background: #eceff1;
-    }
-    th, td {
-      padding: 10px 12px;
-      font-size: 13px;
-      border-bottom: 1px solid #eceff1;
-      vertical-align: middle;
-    }
-    th {
-      text-align: left;
-      font-weight: 600;
-      color: #455a64;
-    }
-    tr:last-child td {
-      border-bottom: none;
-    }
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 2px 8px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 500;
-    }
-    .status-pending {
-      background: #fff3e0;
-      color: #ef6c00;
-    }
-    .status-approved {
-      background: #e8f5e9;
-      color: #2e7d32;
-    }
-    .status-rejected {
-      background: #ffebee;
-      color: #c62828;
-    }
-    .pill {
-      font-size: 11px;
-      padding: 2px 6px;
-      border-radius: 999px;
-      background: #eceff1;
-    }
-    .thumb {
-      width: 72px;
-      height: 48px;
-      object-fit: cover;
-      border-radius: 6px;
-      border: 1px solid #eceff1;
-      background: #fafbfc;
-    }
-    .thumb-placeholder {
-      width: 72px;
-      height: 48px;
-      border-radius: 6px;
-      border: 1px dashed #cfd8dc;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      color: #90a4ae;
-      background: #fafbfc;
-    }
-    .center {
-      text-align: center;
-      padding: 40px 0;
-      color: #90a4ae;
-    }
-    .badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-    }
-
-    /* 简单登录遮罩 */
-    #login-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 999;
-    }
-    #login-box {
-      background: #fff;
-      padding: 24px 28px 20px;
-      border-radius: 16px;
-      width: 320px;
-      box-shadow: 0 12px 40px rgba(15,23,42,0.3);
-    }
-    #login-box h2 {
-      margin: 0 0 8px;
-      font-size: 18px;
-    }
-    #login-box p {
-      margin: 0 0 16px;
-      font-size: 13px;
-      color: #607d8b;
-    }
-    #login-box input {
-      width: 100%;
-      border-radius: 999px;
-      border: 1px solid #cfd8dc;
-      padding: 8px 12px;
-      font-size: 13px;
-      margin-bottom: 12px;
-      box-sizing: border-box;
-    }
-    #login-error {
-      color: #c62828;
-      font-size: 12px;
-      min-height: 16px;
-      margin-bottom: 4px;
-    }
-
-    @media (max-width: 800px) {
-      th:nth-child(3),
-      td:nth-child(3),
-      th:nth-child(4),
-      td:nth-child(4),
-      th:nth-child(6),
-      td:nth-child(6) {
-        display: none;
-      }
-    }
+    body { font-family: Arial, sans-serif; max-width: 1100px; margin: 20px auto; }
+    h1 { text-align: center; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { padding: 8px 10px; border: 1px solid #ccc; text-align: left; font-size: 14px; }
+    th { background: #f5f5f5; }
+    button { padding: 4px 8px; margin-right: 4px; cursor: pointer; font-size: 12px; }
+    .status { font-weight: bold; }
+    .status.pending { color: #ff9800; }
+    .status.approved { color: #4caf50; }
+    .status.rejected { color: #f44336; }
+    #login-section, #admin-section { border: 1px solid #ddd; padding: 15px; border-radius: 6px; margin-top: 20px; }
+    label { display: block; margin-top: 8px; }
+    input { width: 100%; padding: 8px; margin-top: 4px; }
   </style>
 </head>
 <body>
-  <!-- 简单的“假登录”，只是为了防止别人误点，这不是严格安全控制 -->
-  <div id="login-overlay">
-    <div id="login-box">
-      <h2>DrivingTrust Admin</h2>
-      <p>请输入后台访问密码。</p>
-      <input type="password" id="admin-password" placeholder="Admin password" />
-      <div id="login-error"></div>
-      <button class="primary" id="login-button">Login</button>
-    </div>
+  <h1>DrivingTrust Admin Panel</h1>
+
+  <!-- 登录区域 -->
+  <div id="login-section">
+    <h2>Admin Login</h2>
+    <label>
+      Email
+      <input type="email" id="email" placeholder="admin email" />
+    </label>
+    <label>
+      Password
+      <input type="password" id="password" placeholder="password" />
+    </label>
+    <button id="login-btn">Login</button>
+    <p id="login-msg" style="color:red; font-size: 13px;"></p>
   </div>
 
-  <header>
-    <h1>DrivingTrust · Admin Panel</h1>
-    <div class="env-tag">internal · first version</div>
-  </header>
-
-  <main>
-    <div class="toolbar">
-      <div class="toolbar-left">
-        <strong>Car requests</strong>
-        <span id="car-count" class="pill">0 cars</span>
-      </div>
-      <div class="toolbar-right">
-        <label>
-          Filter:
-          <select id="status-filter">
-            <option value="all">All</option>
-            <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
-          </select>
-        </label>
-        <button id="refresh-btn" class="outline">Refresh</button>
-      </div>
+  <!-- 后台区域 -->
+  <div id="admin-section" style="display:none">
+    <div style="display:flex; justify-content: space-between; align-items:center;">
+      <h2>Car Listings</h2>
+      <button id="logout-btn">Logout</button>
     </div>
 
-    <div id="table-wrapper">
-      <div class="center">Loading...</div>
-    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Owner</th>
+          <th>Phone</th>
+          <th>Car</th>
+          <th>City</th>
+          <th>Mileage</th>
+          <th>Price</th>
+          <th>Status</th>
+          <th>Images</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="car-list"></tbody>
+    </table>
+  </div>
 
-    <!-- 隐藏的文件选择，用来上传图片 -->
-    <input type="file" id="image-input" accept="image/*" multiple style="display:none" />
-  </main>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    // TODO: 换成你自己的 Supabase 项目配置
+    const SUPABASE_URL = "https://ppgykjzirjrofrlgrgma.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwZ3lranppcmpyb2ZybGdyZ21hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyNTExODksImV4cCI6MjA3ODgyNzE4OX0.BdKunhUtaZUeDIl7SWN2McgzT0_BB7Bj5AjV-Xwsjy0";
 
-  <!-- Supabase JS：用 ESM CDN 版本 -->
-  <script type="module">
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // ===== 需要你自己修改的两项 =====
-    const SUPABASE_URL = 'https://ppgykjzirjrofrlgrgma.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwZ3lranppcmpyb2ZybGdyZ21hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyNTExODksImV4cCI6MjA3ODgyNzE4OX0.BdKunhUtaZUeDIl7SWN2McgzT0_BB7Bj5AjV-Xwsjy0';
-    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const loginSection = document.getElementById("login-section");
+    const adminSection = document.getElementById("admin-section");
+    const loginMsg = document.getElementById("login-msg");
 
-    // 简单“后台密码”（只在前端校验，别放真正的超机密密码）
-    const ADMIN_PASSWORD = 'DrivingTrust2025';
-
-    const loginOverlay = document.getElementById('login-overlay');
-    const loginButton = document.getElementById('login-button');
-    const loginError = document.getElementById('login-error');
-    const passwordInput = document.getElementById('admin-password');
-
-    loginButton.addEventListener('click', () => {
-      if (passwordInput.value === ADMIN_PASSWORD) {
-        loginOverlay.style.display = 'none';
-        loadCars();
+    async function checkSession() {
+      const { data } = await supabaseClient.auth.getUser();
+      if (data && data.user) {
+        showAdmin();
       } else {
-        loginError.textContent = '密码错误';
+        showLogin();
+      }
+    }
+
+    function showLogin() {
+      loginSection.style.display = "block";
+      adminSection.style.display = "none";
+    }
+
+    function showAdmin() {
+      loginSection.style.display = "none";
+      adminSection.style.display = "block";
+      loadCars();
+    }
+
+    document.getElementById("login-btn").addEventListener("click", async () => {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      loginMsg.textContent = "";
+
+      const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        loginMsg.textContent = "Login failed: " + error.message;
+      } else {
+        showAdmin();
       }
     });
 
-    passwordInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') loginButton.click();
+    document.getElementById("logout-btn").addEventListener("click", async () => {
+      await supabaseClient.auth.signOut();
+      showLogin();
     });
-
-    // ===== Admin 主逻辑 =====
-    const tableWrapper = document.getElementById('table-wrapper');
-    const carCount = document.getElementById('car-count');
-    const statusFilter = document.getElementById('status-filter');
-    const refreshBtn = document.getElementById('refresh-btn');
-    const imageInput = document.getElementById('image-input');
-
-    let allCars = [];
-    let currentUploadCarId = null;
-
-    refreshBtn.addEventListener('click', loadCars);
-    statusFilter.addEventListener('change', renderTable);
 
     async function loadCars() {
-      tableWrapper.innerHTML = '<div class="center">Loading...</div>';
-      const { data, error } = await supabase
-        .from('cars')
-        .select('*')
-        .order('id', { ascending: false });
+      const res = await fetch("/api/getCars");
+      const cars = await res.json();
+      const tbody = document.getElementById("car-list");
+      tbody.innerHTML = "";
 
-      if (error) {
-        console.error(error);
-        tableWrapper.innerHTML = '<div class="center">加载失败，请检查控制台。</div>';
-        return;
-      }
+      cars.forEach(car => {
+        const tr = document.createElement("tr");
 
-      allCars = data || [];
-      carCount.textContent = `${allCars.length} cars`;
-      renderTable();
-    }
+        const status = car.status || "pending";
 
-    function renderTable() {
-      const filter = statusFilter.value;
-      const cars = allCars.filter(car => {
-        if (filter === 'all') return true;
-        return (car.status || 'pending') === filter;
-      });
+        const imagesCount =
+          car.images && Array.isArray(car.images) ? car.images.length : 0;
 
-      if (!cars.length) {
-        tableWrapper.innerHTML = '<div class="center">No cars for this filter.</div>';
-        return;
-      }
-
-      const rowsHtml = cars.map(car => {
-        const status = car.status || 'pending';
-        const badgeClass =
-          status === 'approved'
-            ? 'status-badge status-approved'
-            : status === 'rejected'
-            ? 'status-badge status-rejected'
-            : 'status-badge status-pending';
-
-        const firstImage =
-          Array.isArray(car.images) && car.images.length > 0 ? car.images[0] : null;
-
-        return `
-          <tr data-id="${car.id}">
-            <td>${car.id}</td>
-            <td>
-              <div><strong>${escapeHtml(car.name || '')}</strong></div>
-              <div style="font-size:11px;color:#78909c;">
-                ${escapeHtml(car.phone || '')}
-              </div>
-            </td>
-            <td>
-              <div>${escapeHtml(car.car || '')}</div>
-              <div style="font-size:11px;color:#78909c;">
-                ${escapeHtml(car.city || '')}
-              </div>
-            </td>
-            <td>
-              <div>KM: ${car.mileage ?? '-'}</div>
-              <div class="badges">
-                <span class="pill">${escapeHtml(car.accident || 'Unknown')}</span>
-                <span class="pill">Inspect: ${escapeHtml(car.inspection || 'Unknown')}</span>
-              </div>
-            </td>
-            <td>
-              <div>$${escapeHtml(car.price || '')}</div>
-              <div style="font-size:11px;color:#78909c;">
-                ${escapeHtml(car.notes || '')}
-              </div>
-            </td>
-            <td>
-              <span class="${badgeClass}">${status}</span>
-            </td>
-            <td>
-              ${
-                firstImage
-                  ? `<img src="${firstImage}" class="thumb" alt="thumb" />`
-                  : `<div class="thumb-placeholder">No image</div>`
-              }
-            </td>
-            <td>
-              <button class="outline" data-action="pending">Pending</button>
-              <button class="primary" data-action="approved">Approve</button>
-              <button class="danger" data-action="rejected">Reject</button>
-              <br/>
-              <button class="outline" data-action="upload" style="margin-top:4px;">Upload Images</button>
-            </td>
-          </tr>
+        tr.innerHTML = `
+          <td>${car.id}</td>
+          <td>${car.name}</td>
+          <td>${car.phone}</td>
+          <td>${car.car}</td>
+          <td>${car.city}</td>
+          <td>${car.mileage}</td>
+          <td>${car.price}</td>
+          <td><span class="status ${status}">${status}</span></td>
+          <td>${imagesCount}</td>
+          <td>
+            <button onclick="updateStatus(${car.id}, 'pending')">Pending</button>
+            <button onclick="updateStatus(${car.id}, 'approved')">Approve</button>
+            <button onclick="updateStatus(${car.id}, 'rejected')">Reject</button>
+          </td>
         `;
-      }).join('');
 
-      tableWrapper.innerHTML = `
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Seller</th>
-              <th>Car</th>
-              <th>Details</th>
-              <th>Price / Notes</th>
-              <th>Status</th>
-              <th>Images</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>${rowsHtml}</tbody>
-        </table>
-      `;
-
-      // 绑定按钮事件
-      tableWrapper.querySelectorAll('button[data-action]').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          const tr = btn.closest('tr');
-          const id = Number(tr.dataset.id);
-          const action = btn.dataset.action;
-
-          if (action === 'upload') {
-            currentUploadCarId = id;
-            imageInput.click();
-            return;
-          }
-
-          await updateStatus(id, action);
-        });
+        tbody.appendChild(tr);
       });
     }
 
-    async function updateStatus(id, newStatus) {
-      const statusMap = {
-        pending: 'pending',
-        approved: 'approved',
-        rejected: 'rejected'
-      };
-      const status = statusMap[newStatus];
-      if (!status) return;
-
-      const { error } = await supabase
-        .from('cars')
-        .update({ status })
-        .eq('id', id);
-
-      if (error) {
-        alert('更新失败：' + error.message);
-        console.error(error);
-        return;
-      }
-
-      const target = allCars.find(c => c.id === id);
-      if (target) target.status = status;
-      renderTable();
+    async function updateStatus(id, status) {
+      await fetch("/api/updateStatus", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status }),
+      });
+      alert("Status updated to " + status);
+      loadCars();
     }
 
-    // 图片上传逻辑
-    imageInput.addEventListener('change', async (event) => {
-      const files = Array.from(event.target.files || []);
-      if (!files.length || !currentUploadCarId) return;
+    // 暴露到全局，让 HTML 里的 onclick 能访问
+    window.updateStatus = updateStatus;
 
-      const carId = currentUploadCarId;
-      currentUploadCarId = null;
-      imageInput.value = '';
-
-      for (const file of files) {
-        const path = `${carId}/${Date.now()}-${file.name}`;
-        const { data, error } = await supabase
-          .storage
-          .from('car-images')
-          .upload(path, file);
-
-        if (error) {
-          alert('上传失败：' + error.message);
-          console.error(error);
-          continue;
-        }
-
-        const { data: publicData } = supabase
-          .storage
-          .from('car-images')
-          .getPublicUrl(path);
-
-        const imageUrl = publicData.publicUrl;
-
-        // 调用你刚才建的 append_image 函数，把 URL 写进 images 数组
-        const { error: rpcError } = await supabase
-          .rpc('append_image', {
-            car_row_id: carId,
-            image_url: imageUrl
-          });
-
-        if (rpcError) {
-          alert('写入图片 URL 失败：' + rpcError.message);
-          console.error(rpcError);
-        }
-      }
-
-      // 重新加载当前数据
-      await loadCars();
-    });
-
-    function escapeHtml(str) {
-      if (str == null) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
+    checkSession();
   </script>
 </body>
 </html>
