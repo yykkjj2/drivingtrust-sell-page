@@ -240,7 +240,10 @@ const PAGE_SIZE = 20;
 async function loadCars() {
   const res = await fetch("/api/getCars");
   ALL = await res.json();
-  FILTERED = ALL.slice();
+
+  // 🔥 首次加载就只显示 approved
+  FILTERED = ALL.filter(car => (car.status || "pending") === "approved");
+
   render();
 }
 
@@ -262,7 +265,7 @@ function render() {
       <img src="${img}" class="thumb" />
       <div class="info">
         <div class="title">${car.car}</div>
-        <div class="meta">${car.city} · ${car.mileage} km</div>
+        <div class="meta">${car.city} · ${Number(car.mileage).toLocaleString()} km</div>
         <div class="price">$${car.price}</div>
       </div>
     `;
@@ -277,15 +280,16 @@ function renderPagination() {
   pag.innerHTML = "";
 
   const total = Math.ceil(FILTERED.length / PAGE_SIZE);
-
   for (let i = 1; i <= total; i++) {
     const btn = document.createElement("button");
     btn.className = "page-btn" + (i === PAGE ? " active" : "");
     btn.textContent = i;
+
     btn.onclick = () => {
       PAGE = i;
       render();
     };
+
     pag.appendChild(btn);
   }
 }
@@ -297,15 +301,12 @@ function applyFilters() {
   const price = document.getElementById("price").value;
   const sort = document.getElementById("sort").value;
 
+  // 🔥 再次过滤 approved
   FILTERED = ALL.filter(car => {
-    const text =
-      (car.car || "") +
-      " " +
-      (car.city || "") +
-      " " +
-      (car.name || "");
+    if ((car.status || "pending") !== "approved") return false;
 
-    const matchKw = !kw || text.toLowerCase().includes(kw);
+    const text = `${car.car || ""} ${car.city || ""} ${car.name || ""}`.toLowerCase();
+    const matchKw = !kw || text.includes(kw);
     const matchCity = city === "all" || car.city === city;
     const matchBrand = brand === "all" || car.car.toLowerCase().includes(brand.toLowerCase());
     const matchPrice = price === "all" || Number(car.price) <= Number(price);
