@@ -3,51 +3,270 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Car Details — DrivingTrust</title>
+<title>DrivingTrust — Vehicle Details</title>
 
 <style>
-  body { font-family: Arial; margin:0; background:#f5f5f5; padding-bottom:80px; }
-  .container { max-width:900px; margin:auto; padding:20px; }
-
-  .big-img {
-    width:100%; height:420px;
-    object-fit:cover; border-radius:10px;
+  :root {
+    --dt-primary: #0b4ee6;
+    --dt-secondary: #11b395;
+    --dt-bg: #f3f6fb;
+    --dt-text-main: #111827;
+    --dt-text-sub: #6b7280;
+    --dt-radius: 16px;
+    --dt-shadow: 0 18px 45px rgba(15,23,42,0.18);
   }
 
-  .thumbs {
-    display:flex; margin-top:10px;
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, Arial, sans-serif;
+    background: var(--dt-bg);
+    color: var(--dt-text-main);
   }
-  .thumbs img {
-    width:120px; height:90px;
-    object-fit:cover;
-    border-radius:6px; margin-right:10px;
-    cursor:pointer; border:2px solid transparent;
-    transition:0.2s;
+  a { text-decoration: none; color: inherit; }
+
+  /* NAVBAR */
+  .navbar {
+    background: rgba(255,255,255,0.96);
+    padding: 14px 20px;
+    backdrop-filter: blur(16px);
+    position: sticky; top: 0;
+    border-bottom: 1px solid rgba(148,163,184,0.35);
+    z-index: 20;
   }
-  .thumbs img:hover {
-    border:2px solid #003a75;
+  .nav-wrap {
+    max-width: 1200px;
+    margin: auto;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-left {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--dt-primary);
+  }
+  .nav-right a { margin-left: 16px; color: var(--dt-text-sub); }
+  .nav-right a:hover { color: var(--dt-primary); }
+
+  /* LAYOUT */
+  .page {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 16px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 26px;
+  }
+  @media (max-width: 900px){
+    .grid { grid-template-columns: 1fr; }
   }
 
-  .title { font-size:26px; font-weight:bold; margin:20px 0 10px; color:#003a75; }
-  .section { background:white; padding:18px; border-radius:10px; margin-top:20px; box-shadow:0 3px 12px rgba(0,0,0,0.06); }
+  /* CAROUSEL */
+  .carousel {
+    background: white;
+    border-radius: var(--dt-radius);
+    overflow: hidden;
+    box-shadow: var(--dt-shadow);
+  }
+  .carousel-main {
+    position: relative;
+  }
+  .carousel-main img {
+    width: 100%;
+    height: 370px;
+    object-fit: cover;
+    cursor: pointer;
+  }
+  .carousel-thumbs {
+    display: flex;
+    gap: 8px;
+    padding: 10px;
+    overflow-x: auto;
+  }
+  .carousel-thumbs img {
+    width: 120px; height: 80px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    cursor: pointer;
+  }
+  .carousel-thumbs img.active {
+    border-color: var(--dt-primary);
+  }
 
-  .row { font-size:16px; margin:6px 0; }
-  .price { font-size:30px; color:#27ae60; margin-top:10px; }
+  /* RIGHT SIDEBAR PRICE CARD */
+  .price-card {
+    background: white;
+    padding: 20px;
+    border-radius: var(--dt-radius);
+    box-shadow: var(--dt-shadow);
+    border: 1px solid rgba(148,163,184,0.36);
+    position: sticky;
+    top: 100px;
+  }
+  .price-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: #059669;
+  }
+  .price-sub {
+    font-size: 13px;
+    color: var(--dt-text-sub);
+    margin-top: 6px;
+  }
+
+  .seller-box {
+    background: var(--dt-bg);
+    padding: 14px;
+    margin-top: 16px;
+    border-radius: var(--dt-radius);
+  }
+  .seller-title {
+    font-size: 16px; font-weight: 600;
+  }
+  .seller-line {
+    margin-top: 6px;
+    font-size: 14px;
+    color: var(--dt-text-sub);
+  }
+
+  /* DETAILS */
+  .details {
+    background: white;
+    border-radius: var(--dt-radius);
+    padding: 20px;
+    box-shadow: var(--dt-shadow);
+    border: 1px solid rgba(148,163,184,0.36);
+  }
+  .detail-title {
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .spec-grid {
+    margin-top: 16px;
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 12px;
+  }
+  .spec-item {
+    background: var(--dt-bg);
+    padding: 12px;
+    border-radius: 12px;
+  }
+  .spec-item-title {
+    font-size: 14px;
+    color: var(--dt-text-sub);
+  }
+  .spec-item-val {
+    margin-top: 4px;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  .notes-box {
+    margin-top: 20px;
+    padding: 14px;
+    background: var(--dt-bg);
+    border-radius: 12px;
+    font-size: 15px;
+  }
+
+  /* LIGHTBOX */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+  }
+  .lightbox img {
+    max-width: 92%;
+    max-height: 92%;
+    border-radius: 14px;
+  }
 </style>
-
 </head>
+
 <body>
-<div class="container">
 
-  <img id="big-img" class="big-img" src="">
+<!-- NAVBAR -->
+<header class="navbar">
+  <div class="nav-wrap">
+    <div class="nav-left">DrivingTrust</div>
+    <div class="nav-right">
+      <a href="/">Home</a>
+      <a href="/listing.html" class="active">Browse</a>
+      <a href="/sell.html">Sell</a>
+      <a href="/admin">Admin</a>
+    </div>
+  </div>
+</header>
 
-  <div id="thumb-container" class="thumbs"></div>
+<main class="page">
+  <div class="grid">
+    <!-- LEFT CONTENT -->
+    <section>
 
-  <div class="title" id="title"></div>
-  <div class="price" id="price"></div>
+      <!-- CAROUSEL -->
+      <div class="carousel">
+        <div class="carousel-main">
+          <img id="mainImg" src="" />
+        </div>
+        <div class="carousel-thumbs" id="thumbs"></div>
+      </div>
 
-  <div class="section" id="info"></div>
+      <!-- DETAILS BOX -->
+      <div class="details" style="margin-top: 20px;">
+        <div class="detail-title" id="car-title">Loading...</div>
 
+        <div class="spec-grid">
+          <div class="spec-item">
+            <div class="spec-item-title">Mileage</div>
+            <div class="spec-item-val" id="mileage"></div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-item-title">Accident History</div>
+            <div class="spec-item-val" id="accident"></div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-item-title">Inspection</div>
+            <div class="spec-item-val" id="inspection"></div>
+          </div>
+          <div class="spec-item">
+            <div class="spec-item-title">City</div>
+            <div class="spec-item-val" id="city"></div>
+          </div>
+        </div>
+
+        <div class="notes-box" id="notes"></div>
+      </div>
+
+    </section>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside>
+      <div class="price-card">
+        <div class="price-value" id="price"></div>
+        <div class="price-sub">Listed on DrivingTrust</div>
+
+        <div class="seller-box">
+          <div class="seller-title">Seller Info</div>
+          <div class="seller-line" id="seller-name"></div>
+          <div class="seller-line" id="seller-phone"></div>
+          <div class="seller-line" id="seller-city"></div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</main>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <img id="lightboxImg" src="">
 </div>
 
 <script>
@@ -61,38 +280,55 @@ async function load() {
   const res = await fetch("/api/getCar?id=" + id);
   const car = await res.json();
 
-  document.getElementById("title").innerText = car.car;
+  // Title & specs
+  document.getElementById("car-title").innerText = car.car;
+  document.getElementById("mileage").innerText = car.mileage + " km";
+  document.getElementById("accident").innerText = car.accident;
+  document.getElementById("inspection").innerText = car.inspection;
+  document.getElementById("city").innerText = car.city;
+  document.getElementById("notes").innerText = car.notes || "No additional notes";
+
+  // Price & seller
   document.getElementById("price").innerText = "$" + car.price;
+  document.getElementById("seller-name").innerText = "Name: " + car.name;
+  document.getElementById("seller-phone").innerText = "Phone: " + car.phone;
+  document.getElementById("seller-city").innerText = "City: " + car.city;
 
-  const info = document.getElementById("info");
-  info.innerHTML = `
-    <div class="row">Seller: ${car.name}</div>
-    <div class="row">Phone: ${car.phone}</div>
-    <div class="row">City: ${car.city}</div>
-    <div class="row">Mileage: ${car.mileage} km</div>
-    <div class="row">Accident: ${car.accident}</div>
-    <div class="row">Inspection: ${car.inspection}</div>
-    <div class="row">Notes: ${car.notes || "N/A"}</div>
-  `;
-
-  // 图片显示
+  // Images
   const imgs = car.images || [];
-  const big = document.getElementById("big-img");
-  const thumbContainer = document.getElementById("thumb-container");
+  const mainImg = document.getElementById("mainImg");
+  const thumbs = document.getElementById("thumbs");
 
-  if (imgs.length > 0) {
-    big.src = imgs[0];
-
-    imgs.forEach(url => {
-      const img = document.createElement("img");
-      img.src = url;
-      img.onclick = () => big.src = url;
-      thumbContainer.appendChild(img);
-    });
-  } else {
-    big.src = "https://placehold.co/800x500?text=No+Image";
+  if (!imgs.length) {
+    mainImg.src = "https://placehold.co/800x500?text=No+Image";
+    return;
   }
+
+  mainImg.src = imgs[0];
+  thumbs.innerHTML = "";
+
+  imgs.forEach((url, idx) => {
+    const t = document.createElement("img");
+    t.src = url;
+    if (idx === 0) t.classList.add("active");
+    t.onclick = () => {
+      mainImg.src = url;
+      document.querySelectorAll(".carousel-thumbs img").forEach(img => img.classList.remove("active"));
+      t.classList.add("active");
+    };
+    thumbs.appendChild(t);
+  });
+
+  // Lightbox
+  mainImg.onclick = () => {
+    const lb = document.getElementById("lightbox");
+    document.getElementById("lightboxImg").src = mainImg.src;
+    lb.style.display = "flex";
+  };
 }
+
+document.getElementById("lightbox").onclick = () =>
+  (document.getElementById("lightbox").style.display = "none");
 
 load();
 </script>
