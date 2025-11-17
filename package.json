@@ -1,14 +1,16 @@
 {
-  "name": "drivingtrust-sell-page",
+  "name": "drivingtrust-next",
   "version": "1.0.0",
-  "description": "DrivingTrust C2C Car Platform",
   "private": true,
-  "type": "module",
   "scripts": {
-    "start": "vercel dev",
-    "dev": "vercel dev"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.43.1"
+    "@supabase/supabase-js": "^2.43.1",
+    "next": "^14.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }
