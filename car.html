@@ -2,52 +2,162 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Car Details</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DrivingTrust - Safer C2C Car Selling</title>
   <style>
-    body { font-family: Arial; padding: 20px; line-height: 1.6; }
+    body { font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; }
+    h1 { text-align: center; }
+    label { display: block; margin-top: 10px; }
+    input, select, textarea { width: 100%; padding: 8px; margin-top: 4px; }
+    button { margin-top: 15px; padding: 10px 15px; width: 100%; }
   </style>
 </head>
 <body>
+  <h1>Safer C2C Car Selling</h1>
 
-<h1>Car Details</h1>
-<div id="details">Loading...</div>
+  <form id="car-form">
+    <label>
+      Full Name / 姓名
+      <input type="text" name="name" required />
+    </label>
 
-<script>
-  function getQueryParam(name) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(name);
-  }
+    <label>
+      Phone Number / 电话
+      <input type="tel" name="phone" required />
+    </label>
 
-  async function loadCar() {
-    const id = getQueryParam("id");
-    if (!id) {
-      document.getElementById("details").innerHTML = "No car ID provided.";
-      return;
+    <label>
+      City / 城市
+      <input type="text" name="city" required />
+    </label>
+
+    <label>
+      Car Details / 车辆信息
+      <input type="text" name="car" placeholder="例如：2022 Tesla Model Y Long Range" required />
+    </label>
+
+    <label>
+      Mileage (km) / 里程
+      <input type="number" name="mileage" required />
+    </label>
+
+    <label>
+      Accident History? / 是否有事故
+      <select name="accident" required>
+        <option value="No">No / 无</option>
+        <option value="Yes">Yes / 有</option>
+      </select>
+    </label>
+
+    <label>
+      Accept platform inspection? / 是否接受平台验车
+      <select name="inspection" required>
+        <option value="Yes">Yes / 是</option>
+        <option value="No">No / 否</option>
+      </select>
+    </label>
+
+    <label>
+      Expected Price / 期望售价
+      <input type="number" name="price" required />
+    </label>
+
+    <label>
+      Additional Notes / 备注
+      <textarea name="notes" rows="3"></textarea>
+    </label>
+
+    <label>
+      Car Photos / 车辆照片（可多选）
+      <input type="file" id="images" multiple accept="image/*" />
+    </label>
+
+    <button type="submit">Submit / 提交</button>
+  </form>
+
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    // TODO: 这两个改成你自己的 Supabase 项目配置
+    const SUPABASE_URL = "https://ppgykjzirjrofrlgrgma.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwZ3lranppcmpyb2ZybGdyZ21hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyNTExODksImV4cCI6MjA3ODgyNzE4OX0.BdKunhUtaZUeDIl7SWN2McgzT0_BB7Bj5AjV-Xwsjy0";
+
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    async function uploadImages(files) {
+      const bucket = "car-images";
+      const urls = [];
+
+      for (const file of files) {
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExt}`;
+        const filePath = `${fileName}`;
+
+        const { error: uploadError } = await supabaseClient
+          .storage
+          .from(bucket)
+          .upload(filePath, file);
+
+        if (uploadError) {
+          console.error("Upload error:", uploadError);
+          alert("图片上传失败，请稍后重试。");
+          return null;
+        }
+
+        const { data } = supabaseClient
+          .storage
+          .from(bucket)
+          .getPublicUrl(filePath);
+
+        urls.push(data.publicUrl);
+      }
+
+      return urls;
     }
 
-    const res = await fetch("/api/getCar?id=" + id);
-    const data = await res.json();
+    document.getElementById("car-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-    if (!data) {
-      document.getElementById("details").innerHTML = "Car not found.";
-      return;
-    }
+      const form = e.target;
+      const formData = new FormData(form);
 
-    const car = data;
-    document.getElementById("details").innerHTML = `
-      <h2>${car.car}</h2>
-      <p><strong>Seller:</strong> ${car.name} (${car.phone})</p>
-      <p><strong>City:</strong> ${car.city}</p>
-      <p><strong>Mileage:</strong> ${car.mileage}</p>
-      <p><strong>Accident:</strong> ${car.accident}</p>
-      <p><strong>Inspection:</strong> ${car.inspection}</p>
-      <p><strong>Price:</strong> ${car.price}</p>
-      <p><strong>Notes:</strong> ${car.notes}</p>
-    `;
-  }
+      const data = {
+        name: formData.get("name"),
+        phone: formData.get("phone"),
+        city: formData.get("city"),
+        car: formData.get("car"),
+        mileage: formData.get("mileage"),
+        accident: formData.get("accident"),
+        inspection: formData.get("inspection"),
+        price: formData.get("price"),
+        notes: formData.get("notes"),
+      };
 
-  loadCar();
-</script>
+      const files = document.getElementById("images").files;
 
+      let imageUrls = [];
+      if (files && files.length > 0) {
+        imageUrls = await uploadImages(files);
+        if (!imageUrls) return; // 上传失败时停止
+      }
+
+      data.images = imageUrls;
+
+      const res = await fetch("/api/addCar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+        alert("提交成功！我们会尽快审核你的车辆信息。");
+        form.reset();
+      } else {
+        console.error(result);
+        alert("提交失败，请稍后重试。");
+      }
+    });
+  </script>
 </body>
 </html>
