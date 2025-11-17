@@ -1,6 +1,13 @@
 {
+  "version": 2,
   "rewrites": [
     { "source": "/listing", "destination": "/listing.html" },
-    { "source": "/car", "destination": "/car.html" }
-  ]
+    { "source": "/car", "destination": "/car.html" },
+    { "source": "/admin", "destination": "/admin.html" }
+  ],
+  "functions": {
+    "api/*.js": {
+      "runtime": "nodejs18.x"
+    }
+  }
 }
