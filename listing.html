@@ -3,76 +3,328 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Car Listings — DrivingTrust</title>
+<title>DrivingTrust — Browse Cars</title>
 
 <style>
-  body { font-family: Arial, sans-serif; background: #f7f7f7; margin:0; padding:20px; }
-  h1 { text-align:center; margin-bottom:30px; color:#003a75; }
+  :root {
+    --dt-primary: #0b4ee6;
+    --dt-primary-soft: #e4ecff;
+    --dt-secondary: #11b395;
+    --dt-bg: #f3f6fb;
+    --dt-text-main: #111827;
+    --dt-text-sub: #6b7280;
+    --dt-radius: 16px;
+    --dt-shadow: 0 18px 45px rgba(15,23,42,0.18);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+    background: var(--dt-bg);
+    color: var(--dt-text-main);
+  }
 
+  /* NAVBAR */
+  .navbar {
+    background: rgba(255,255,255,0.96);
+    padding: 14px 20px;
+    backdrop-filter: blur(16px);
+    position: sticky; top: 0;
+    border-bottom: 1px solid rgba(148,163,184,0.35);
+    z-index: 20;
+  }
+  .nav-wrap {
+    max-width: 1200px;
+    margin: auto;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-left {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--dt-primary);
+  }
+  .nav-right a {
+    margin-left: 16px;
+    font-weight: 500;
+    color: var(--dt-text-sub);
+    text-decoration: none;
+  }
+  .nav-right a:hover {
+    color: var(--dt-primary);
+  }
+  .nav-right a.active { color: var(--dt-primary); font-weight: 600; }
+
+  /* FILTER BAR */
+  .filters {
+    max-width: 1200px;
+    margin: 18px auto;
+    padding: 0 16px;
+  }
+  .filter-row {
+    display: flex; flex-wrap: wrap;
+    gap: 10px;
+  }
+  .filter {
+    background: white;
+    border-radius: 999px;
+    padding: 7px 14px;
+    border: 1px solid #d1d5db;
+    font-size: 13px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .filter input, .filter select {
+    border: none; outline: none; background: transparent;
+    font-size: 14px;
+  }
+  .search-btn {
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: var(--dt-primary);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  /* CAR GRID */
+  .grid {
+    max-width: 1200px;
+    margin: 20px auto 60px;
+    padding: 0 16px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 26px;
+  }
   .card {
-    background:white; 
-    border-radius:12px;
-    padding:16px;
-    margin-bottom:24px;
-    display:flex;
-    box-shadow:0 3px 12px rgba(0,0,0,0.08);
-    cursor:pointer;
-    transition:0.2s;
+    background: white;
+    border-radius: 18px;
+    box-shadow: var(--dt-shadow);
+    overflow: hidden;
+    cursor: pointer;
+    transition: 0.15s transform;
   }
-  .card:hover { transform:scale(1.01); }
-
+  .card:hover {
+    transform: translateY(-4px);
+  }
   .thumb {
-    width:220px; height:150px; 
-    border-radius:8px; 
-    object-fit:cover;
-    margin-right:20px;
+    width: 100%; height: 210px;
+    object-fit: cover;
+  }
+  .info {
+    padding: 14px;
+  }
+  .title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--dt-primary);
+  }
+  .meta {
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--dt-text-sub);
+  }
+  .price {
+    font-size: 22px;
+    font-weight: 700;
+    color: #059669;
+    margin-top: 10px;
   }
 
-  .info { flex:1; }
-
-  .title { font-size:18px; font-weight:bold; color:#003a75; }
-  .row { margin:6px 0; color:#333; }
-
-  .price {
-    font-size:20px; font-weight:bold; color:#27ae60; margin-top:10px;
+  /* PAGINATION */
+  .pagination {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 16px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  .page-btn {
+    min-width: 34px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    background: white;
+    cursor: pointer;
+  }
+  .page-btn.active {
+    background: var(--dt-primary);
+    color: white;
+    border-color: var(--dt-primary);
   }
 </style>
-
 </head>
-<body>
-<h1>Car Listings</h1>
 
-<div id="list"></div>
+<body>
+<header class="navbar">
+  <div class="nav-wrap">
+    <div class="nav-left">DrivingTrust</div>
+    <div class="nav-right">
+      <a href="/">Home</a>
+      <a href="/listing.html" class="active">Browse</a>
+      <a href="/sell.html">Sell</a>
+      <a href="/admin">Admin</a>
+    </div>
+  </div>
+</header>
+
+<!-- FILTERS -->
+<section class="filters">
+  <div class="filter-row">
+    <div class="filter">
+      🔍 <input id="search" type="text" placeholder="Search keywords..." />
+    </div>
+
+    <div class="filter">
+      City:
+      <select id="city">
+        <option value="all">All</option>
+        <option>Richmond</option>
+        <option>Vancouver</option>
+        <option>Burnaby</option>
+        <option>Surrey</option>
+      </select>
+    </div>
+
+    <div class="filter">
+      Brand:
+      <select id="brand">
+        <option value="all">All</option>
+        <option>Toyota</option>
+        <option>Honda</option>
+        <option>BMW</option>
+        <option>Mercedes</option>
+        <option>Audi</option>
+        <option>Lexus</option>
+      </select>
+    </div>
+
+    <div class="filter">
+      Max Price:
+      <select id="price">
+        <option value="all">Any</option>
+        <option value="15000">≤ 15k</option>
+        <option value="25000">≤ 25k</option>
+        <option value="35000">≤ 35k</option>
+        <option value="50000">≤ 50k</option>
+      </select>
+    </div>
+
+    <div class="filter">
+      Sort:
+      <select id="sort">
+        <option value="newest">Newest</option>
+        <option value="priceAsc">Price ↑</option>
+        <option value="priceDesc">Price ↓</option>
+        <option value="mileageAsc">Mileage ↑</option>
+        <option value="mileageDesc">Mileage ↓</option>
+      </select>
+    </div>
+
+    <button class="search-btn" onclick="applyFilters()">Apply</button>
+  </div>
+</section>
+
+<!-- GRID -->
+<div id="grid" class="grid"></div>
+
+<!-- PAGINATION -->
+<div id="pagination" class="pagination"></div>
 
 <script>
+let ALL = [];
+let FILTERED = [];
+let PAGE = 1;
+const PAGE_SIZE = 20;
+
 async function loadCars() {
   const res = await fetch("/api/getCars");
-  const cars = await res.json();
-  const list = document.getElementById("list");
+  ALL = await res.json();
+  FILTERED = ALL.slice();
+  render();
+}
 
-  list.innerHTML = "";
+function render() {
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
 
-  cars.forEach(car => {
-    const firstImg = car.images && car.images.length > 0 ? car.images[0] : "https://placehold.co/400x300?text=No+Image";
+  const start = (PAGE - 1) * PAGE_SIZE;
+  const end = start + PAGE_SIZE;
+  const pageCars = FILTERED.slice(start, end);
 
-    const card = document.createElement("div");
-    card.className = "card";
-    card.onclick = () => location.href = `/car.html?id=${car.id}`;
+  pageCars.forEach(car => {
+    const img = car.images?.[0] || "https://placehold.co/600x400?text=No+Image";
+    const div = document.createElement("div");
+    div.className = "card";
+    div.onclick = () => location.href = "/car.html?id=" + car.id;
 
-    card.innerHTML = `
-      <img src="${firstImg}" class="thumb" />
-
+    div.innerHTML = `
+      <img src="${img}" class="thumb" />
       <div class="info">
         <div class="title">${car.car}</div>
-        <div class="row">City: ${car.city}</div>
-        <div class="row">Mileage: ${car.mileage} km</div>
-        <div class="row">Seller: ${car.name}</div>
+        <div class="meta">${car.city} · ${car.mileage} km</div>
         <div class="price">$${car.price}</div>
       </div>
     `;
-
-    list.appendChild(card);
+    grid.appendChild(div);
   });
+
+  renderPagination();
+}
+
+function renderPagination() {
+  const pag = document.getElementById("pagination");
+  pag.innerHTML = "";
+
+  const total = Math.ceil(FILTERED.length / PAGE_SIZE);
+
+  for (let i = 1; i <= total; i++) {
+    const btn = document.createElement("button");
+    btn.className = "page-btn" + (i === PAGE ? " active" : "");
+    btn.textContent = i;
+    btn.onclick = () => {
+      PAGE = i;
+      render();
+    };
+    pag.appendChild(btn);
+  }
+}
+
+function applyFilters() {
+  const kw = document.getElementById("search").value.toLowerCase();
+  const city = document.getElementById("city").value;
+  const brand = document.getElementById("brand").value;
+  const price = document.getElementById("price").value;
+  const sort = document.getElementById("sort").value;
+
+  FILTERED = ALL.filter(car => {
+    const text =
+      (car.car || "") +
+      " " +
+      (car.city || "") +
+      " " +
+      (car.name || "");
+
+    const matchKw = !kw || text.toLowerCase().includes(kw);
+    const matchCity = city === "all" || car.city === city;
+    const matchBrand = brand === "all" || car.car.toLowerCase().includes(brand.toLowerCase());
+    const matchPrice = price === "all" || Number(car.price) <= Number(price);
+
+    return matchKw && matchCity && matchBrand && matchPrice;
+  });
+
+  // 排序
+  FILTERED.sort((a, b) => {
+    if (sort === "newest") return b.id - a.id;
+    if (sort === "priceAsc") return a.price - b.price;
+    if (sort === "priceDesc") return b.price - a.price;
+    if (sort === "mileageAsc") return a.mileage - b.mileage;
+    if (sort === "mileageDesc") return b.mileage - a.mileage;
+    return 0;
+  });
+
+  PAGE = 1;
+  render();
 }
 
 loadCars();
