@@ -1,17 +1,33 @@
-import { createClient } from "@supabase/supabase-js";
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+import { createClient } from '@supabase/supabase-js';
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).json({ error: "Method Not Allowed" });
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: "Method Not Allowed" });
+  }
 
-  const { id, status } = req.body;
+  const supabase = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_ANON_KEY,   // 用 anon 即可，因为 RLS 负责权限验证
+    {
+      global: {
+        headers: {
+          "edit-token": req.headers['edit-token'] || ""
+        }
+      }
+    }
+  );
+
+  const { id, data } = req.body;
 
   const { error } = await supabase
     .from("cars")
-    .update({ status })
+    .update(data)
     .eq("id", id);
 
-  if (error) return res.status(400).json({ error });
+  if (error) {
+    console.error(error);
+    return res.status(500).json({ error: error.message });
+  }
 
-  res.json({ message: "Updated" });
+  res.json({ success: true });
 }
