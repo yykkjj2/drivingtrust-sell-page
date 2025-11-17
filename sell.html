@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DrivingTrust — Sell My Car</title>
+
+<style>
+  :root {
+    --dt-primary: #0b4ee6;
+    --dt-secondary: #11b395;
+    --dt-bg: #f3f6fb;
+    --dt-text-main: #111827;
+    --dt-text-sub: #6b7280;
+    --dt-border: #d1d5db;
+    --dt-radius: 18px;
+    --dt-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0;
+    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+    background:radial-gradient(circle at top left,#e3edff,#f9fafb);
+    color:var(--dt-text-main);
+  }
+  a { color:inherit; text-decoration:none; }
+
+  .navbar {
+    background:rgba(255,255,255,0.96);
+    backdrop-filter:blur(16px);
+    border-bottom:1px solid rgba(148,163,184,0.4);
+    position:sticky; top:0; z-index:20;
+  }
+  .nav-inner {
+    max-width:900px;
+    margin:0 auto;
+    padding:10px 16px;
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+  }
+  .nav-left {
+    display:flex; align-items:center; gap:10px;
+  }
+  .nav-logo {
+    width:32px; height:32px;
+    border-radius:999px;
+    background:radial-gradient(circle at 20% 15%,#5ee7ff,#0b4ee6 45%,#020617 100%);
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-weight:700; font-size:16px;
+    box-shadow:0 12px 24px rgba(15,23,42,0.35);
+  }
+  .nav-brand-title { font-size:18px; font-weight:700; }
+  .nav-brand-sub { font-size:11px; color:var(--dt-text-sub); }
+  .nav-right a {
+    font-size:14px; margin-left:16px;
+  }
+  .nav-right a.active { font-weight:600; color:var(--dt-primary); }
+
+  .page {
+    max-width:900px;
+    margin:22px auto 40px;
+    padding:0 16px;
+  }
+  .page-title {
+    font-size:26px;
+    font-weight:700;
+    margin-bottom:6px;
+  }
+  .page-sub {
+    font-size:13px;
+    color:var(--dt-text-sub);
+    margin-bottom:18px;
+  }
+
+  .form-card {
+    background:#ffffff;
+    border-radius:var(--dt-radius);
+    box-shadow:var(--dt-shadow);
+    border:1px solid rgba(148,163,184,0.4);
+    padding:20px 20px 18px;
+  }
+
+  .form-grid {
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:18px 16px;
+  }
+  @media(max-width:700px){
+    .form-grid { grid-template-columns:1fr; }
+  }
+
+  .field label {
+    display:block;
+    font-size:13px;
+    font-weight:600;
+    margin-bottom:4px;
+  }
+  .field span {
+    font-size:11px;
+    color:var(--dt-text-sub);
+  }
+  input, select, textarea {
+    width:100%;
+    margin-top:4px;
+    padding:10px 11px;
+    border-radius:10px;
+    border:1px solid var(--dt-border);
+    font-size:14px;
+    outline:none;
+    background:#f9fafb;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color:var(--dt-primary);
+    box-shadow:0 0 0 1px rgba(37,99,235,0.25);
+    background:#ffffff;
+  }
+  textarea { min-height:80px; resize:vertical; }
+
+  .full-row { grid-column:1 / -1; }
+
+  .upload-box {
+    margin-top:4px;
+    padding:12px;
+    border-radius:12px;
+    border:1px dashed #9ca3af;
+    background:#f9fafb;
+  }
+  .upload-box input[type="file"] {
+    padding:0;
+    border:none;
+    background:transparent;
+  }
+  .thumbs {
+    margin-top:8px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .thumbs img {
+    width:80px; height:60px;
+    object-fit:cover;
+    border-radius:8px;
+    border:1px solid #e5e7eb;
+  }
+
+  .submit-row {
+    margin-top:18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+  }
+  .btn-primary {
+    border:none;
+    border-radius:999px;
+    padding:10px 26px;
+    background:linear-gradient(135deg,#0b4ee6,#2563eb);
+    color:#fff;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    box-shadow:0 14px 30px rgba(37,99,235,0.45);
+  }
+  .btn-primary:hover { filter:brightness(1.05); transform:translateY(-1px); }
+
+  .status-text {
+    font-size:12px;
+    color:var(--dt-text-sub);
+  }
+  .status-text.ok { color:#16a34a; }
+  .status-text.err { color:#dc2626; }
+
+</style>
+</head>
+<body>
+<header class="navbar">
+  <div class="nav-inner">
+    <div class="nav-left">
+      <div class="nav-logo">DT</div>
+      <div>
+        <div class="nav-brand-title">DrivingTrust</div>
+        <div class="nav-brand-sub">Sell your car with confidence</div>
+      </div>
+    </div>
+    <nav class="nav-right">
+      <a href="/">Home</a>
+      <a href="/listing.html">Browse</a>
+      <a href="/sell.html" class="active">Sell</a>
+      <a href="/admin">Admin</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page">
+  <h1 class="page-title">Tell us about your car</h1>
+  <p class="page-sub">填写信息后，我们会创建一个车源，等待后台审核后展示给买家。</p>
+
+  <section class="form-card">
+    <form id="sellForm">
+      <div class="form-grid">
+        <div class="field">
+          <label>Full Name / 姓名</label>
+          <input type="text" name="name" required />
+        </div>
+        <div class="field">
+          <label>Phone Number / 电话</label>
+          <input type="text" name="phone" required />
+        </div>
+
+        <div class="field">
+          <label>City / 城市</label>
+          <select name="city" required>
+            <option value="Richmond">Richmond</option>
+            <option value="Vancouver">Vancouver</option>
+            <option value="Burnaby">Burnaby</option>
+            <option value="Surrey">Surrey</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Expected Price / 期望售价</label>
+          <input type="text" name="price" placeholder="e.g. 23800" />
+        </div>
+
+        <div class="field full-row">
+          <label>Car Details / 车辆信息</label>
+          <span>例如：2018 Toyota RAV4 LE AWD</span>
+          <input type="text" name="car" required />
+        </div>
+
+        <div class="field">
+          <label>Mileage (km) / 里程</label>
+          <input type="number" name="mileage" />
+        </div>
+        <div class="field">
+          <label>Accident History? / 是否有事故</label>
+          <select name="accident">
+            <option value="No">No / 无</option>
+            <option value="Yes">Yes / 有</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Accept platform inspection? / 是否接受平台验车</label>
+          <select name="inspection">
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+
+        <div class="field full-row">
+          <label>Upload Images / 上传车辆图片</label>
+          <div class="upload-box">
+            <input type="file" id="images" multiple accept="image/*" />
+            <div style="font-size:11px; color:var(--dt-text-sub); margin-top:4px;">
+              建议至少上传 4 张高清照片：外观四角、内饰、中控、里程表等。
+            </div>
+            <div id="thumbs" class="thumbs"></div>
+          </div>
+        </div>
+
+        <div class="field full-row">
+          <label>Additional Notes / 备注</label>
+          <textarea name="notes" placeholder="例如：首任车主、在 4S 店保养、最近刚做完大保养等"></textarea>
+        </div>
+      </div>
+
+      <div class="submit-row">
+        <button type="submit" class="btn-primary">Submit / 提交车源</button>
+        <div id="status" class="status-text">We will store it securely in Supabase.</div>
+      </div>
+    </form>
+  </section>
+</main>
+
+<script>
+  const imagesInput = document.getElementById("images");
+  const thumbsBox = document.getElementById("thumbs");
+  const statusText = document.getElementById("status");
+  const form = document.getElementById("sellForm");
+
+  imagesInput.addEventListener("change", () => {
+    thumbsBox.innerHTML = "";
+    Array.from(imagesInput.files).forEach((file) => {
+      const url = URL.createObjectURL(file);
+      const img = document.createElement("img");
+      img.src = url;
+      thumbsBox.appendChild(img);
+    });
+  });
+
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const base64 = reader.result.split(",")[1];
+        resolve(base64);
+      };
+      reader.onerror = (err) => reject(err);
+    });
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    statusText.textContent = "Uploading images and saving your car...";
+    statusText.className = "status-text";
+
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    if (data.mileage) data.mileage = Number(data.mileage);
+
+    const files = imagesInput.files;
+    const imageUrls = [];
+
+    try {
+      for (let file of files) {
+        const base64 = await fileToBase64(file);
+        const res = await fetch("/api/uploadImage", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fileName: file.name,
+            fileBase64: base64,
+          }),
+        });
+        const result = await res.json();
+        if (result.url) imageUrls.push(result.url);
+      }
+
+      data.images = imageUrls;
+
+      const res2 = await fetch("/api/addCar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const result2 = await res2.json();
+
+      if (res2.ok) {
+        statusText.textContent = "Submitted! 已提交成功，等待后台审核。";
+        statusText.className = "status-text ok";
+        form.reset();
+        thumbsBox.innerHTML = "";
+      } else {
+        statusText.textContent =
+          "提交失败：" + (result2.error?.message || "Unknown error");
+        statusText.className = "status-text err";
+      }
+    } catch (err) {
+      console.error(err);
+      statusText.textContent = "网络错误，稍后再试。";
+      statusText.className = "status-text err";
+    }
+  });
+</script>
+</body>
+</html>
