@@ -72,23 +72,80 @@
     <button type="submit">Submit / 提交</button>
   </form>
 
-  <script>
-    document.getElementById("sellForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const form = e.target;
-      const data = Object.fromEntries(new FormData(form).entries());
+<script>
+  // ① 工具函数：File → Base64
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        // 形如 "data:image/jpeg;base64,xxxxxx"，只取逗号后面的部分
+        const base64 = reader.result.split(",")[1];
+        resolve(base64);
+      };
+      reader.onerror = (err) => reject(err);
+    });
+  }
 
-      const res = await fetch("/api/addCar", {
+  const form = document.getElementById("sellForm");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    // 原来就有的：收集表单字段
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    // 根据你原来的写法，如果有：
+    if (data.mileage) {
+      data.mileage = Number(data.mileage);
+    }
+
+    // ② 新增：处理图片文件
+    const files = document.getElementById("images").files;
+    const imageUrls = [];
+
+    for (let file of files) {
+      const base64 = await fileToBase64(file);
+
+      const res = await fetch("/api/uploadImage", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          fileName: file.name,
+          fileBase64: base64,
+        }),
       });
 
       const result = await res.json();
-      alert(result.message || "Submitted!");
-      form.reset();
+      if (result.url) {
+        imageUrls.push(result.url);
+      }
+    }
+
+    // 把图片 URL 数组放进 data
+    data.images = imageUrls;
+
+    // ③ 保留你之前的 addCar 调用，只是在 body 里用新 data
+    const res2 = await fetch("/api/addCar", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
     });
-  </script>
+
+    const result2 = await res2.json();
+
+    if (res2.ok) {
+      alert("Submitted! 已提交");
+      form.reset();
+    } else {
+      alert("提交失败：" + (result2.error?.message || "Unknown error"));
+    }
+  });
+</script>
+
 
 </div>
 </body>
