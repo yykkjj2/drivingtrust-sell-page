@@ -6,19 +6,17 @@
   <title>DrivingTrust Admin Panel</title>
   <style>
     :root {
-      --primary: #003a75;
-      --primary-soft: #e7f0ff;
-      --danger: #e74c3c;
-      --success: #27ae60;
-      --warning: #f39c12;
-      --bg: #f3f6fb;
-      --card-bg: #ffffff;
-      --border: #d7dfeb;
-      --text-main: #1f2933;
-      --text-sub: #6b7b93;
-      --radius-lg: 12px;
-      --radius-sm: 6px;
-      --shadow-soft: 0 8px 24px rgba(15, 23, 42, 0.08);
+      --bg: #f3f4f6;
+      --card: #ffffff;
+      --primary: #1d4ed8;
+      --primary-soft: #e0ecff;
+      --border: #e5e7eb;
+      --text-main: #111827;
+      --text-sub: #6b7280;
+      --danger: #b91c1c;
+      --danger-soft: #fee2e2;
+      --success: #047857;
+      --success-soft: #e6fcef;
     }
 
     * {
@@ -26,11 +24,10 @@
     }
 
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        Arial, sans-serif;
       margin: 0;
       padding: 16px;
-      background: radial-gradient(circle at top left, #e6f1ff, #f3f6fb);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, #e0f2fe 0, #f9fafb 40%, #e5e7eb 100%);
       color: var(--text-main);
     }
 
@@ -39,13 +36,12 @@
       margin: 0 auto;
     }
 
-    /* 顶部栏 */
+    /* 顶部导航 */
     .top-bar {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      margin-bottom: 20px;
-      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
     }
 
     .brand {
@@ -55,344 +51,273 @@
     }
 
     .brand-logo {
-      width: 40px;
-      height: 40px;
+      width: 36px;
+      height: 36px;
       border-radius: 12px;
-      background: linear-gradient(135deg, #003a75, #1c7ed6);
+      background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
+      color: white;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #fff;
       font-weight: 700;
-      font-size: 20px;
-      box-shadow: var(--shadow-soft);
+      font-size: 18px;
+      box-shadow: 0 3px 10px rgba(37, 99, 235, 0.4);
     }
 
     .brand-text-title {
-      font-size: 22px;
+      font-size: 18px;
       font-weight: 700;
-      color: var(--primary);
     }
+
     .brand-text-sub {
-      font-size: 13px;
+      font-size: 12px;
       color: var(--text-sub);
     }
 
     .top-actions {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .pill {
-      font-size: 12px;
-      padding: 6px 10px;
+      padding: 4px 10px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.9);
-      border: 1px solid #d0ddf0;
-      color: var(--text-sub);
-    }
-
-    button, .btn {
-      font-family: inherit;
+      background: rgba(37, 99, 235, 0.08);
+      color: #1d4ed8;
+      font-size: 11px;
+      border: 1px solid rgba(37, 99, 235, 0.2);
     }
 
     .btn-outline {
-      padding: 8px 14px;
       border-radius: 999px;
-      border: 1px solid #c5d2ea;
+      padding: 6px 12px;
+      border: 1px solid var(--border);
       background: #ffffff;
-      font-size: 13px;
+      font-size: 12px;
       cursor: pointer;
-      color: var(--text-main);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      color: #374151;
     }
     .btn-outline:hover {
-      border-color: var(--primary);
-      background: #f3f8ff;
+      background: #eff6ff;
+      border-color: #bfdbfe;
     }
 
     .btn-logout {
-      padding: 8px 14px;
       border-radius: 999px;
+      padding: 6px 12px;
       border: none;
-      background: var(--primary);
-      color: #ffffff;
-      font-weight: 500;
-      font-size: 13px;
+      background: #f97316;
+      color: white;
+      font-size: 12px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      box-shadow: 0 8px 18px rgba(0, 58, 117, 0.25);
+      gap: 4px;
+      box-shadow: 0 2px 8px rgba(249, 115, 22, 0.4);
     }
     .btn-logout:hover {
-      filter: brightness(1.05);
-      transform: translateY(-1px);
+      background: #ea580c;
+    }
+
+    /* 卡片通用 */
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 16px 18px;
+      box-shadow: 0 4px 18px rgba(15, 23, 42, 0.08);
+      margin-bottom: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
     }
 
     /* 登录卡片 */
-    .card {
-      background: var(--card-bg);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      box-shadow: var(--shadow-soft);
-      border: 1px solid rgba(148, 163, 184, 0.2);
-      margin-bottom: 16px;
-    }
-
-    #login-section {
-      max-width: 420px;
-      margin: 40px auto;
-    }
-
     #login-section h2 {
-      margin: 0 0 4px;
-      font-size: 20px;
-      color: var(--primary);
+      margin-top: 0;
+      margin-bottom: 8px;
     }
-
-    #login-section p.desc {
-      font-size: 13px;
+    .desc {
+      margin: 0 0 16px 0;
+      font-size: 12px;
       color: var(--text-sub);
-      margin: 0 0 16px;
     }
-
     label {
       display: block;
       font-size: 13px;
-      color: var(--text-sub);
       margin-bottom: 4px;
+      color: var(--text-sub);
     }
-
     input[type="email"],
-    input[type="password"] {
+    input[type="password"],
+    input[type="text"],
+    select {
       width: 100%;
-      padding: 10px 12px;
-      border-radius: 8px;
+      border-radius: 10px;
+      padding: 8px 10px;
       border: 1px solid var(--border);
-      font-size: 14px;
+      font-size: 13px;
       outline: none;
-      transition: 0.15s border-color, 0.15s box-shadow, 0.15s background;
-      background: #f8fafc;
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
-    input[type="email"]:focus,
-    input[type="password"]:focus {
+    input:focus,
+    select:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 0 1px rgba(0, 58, 117, 0.1);
-      background: #ffffff;
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.2);
     }
-
-    #login-btn {
-      width: 100%;
-      margin-top: 16px;
-      padding: 10px 0;
+    .btn-primary {
+      margin-top: 8px;
       border-radius: 999px;
+      padding: 8px 14px;
       border: none;
-      background: linear-gradient(135deg, #003a75, #1d72d8);
+      background: linear-gradient(135deg, #1d4ed8, #2563eb);
       color: #ffffff;
-      font-size: 15px;
-      font-weight: 600;
+      font-size: 13px;
       cursor: pointer;
-      box-shadow: 0 10px 20px rgba(23, 37, 84, 0.35);
+      box-shadow: 0 3px 12px rgba(37, 99, 235, 0.5);
     }
-    #login-btn:hover {
-      filter: brightness(1.05);
-      transform: translateY(-0.5px);
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #1d4ed8, #1d4ed8);
     }
-
     #login-msg {
-      margin-top: 10px;
+      margin-top: 6px;
+      color: #b91c1c;
       font-size: 12px;
-      color: #e11d48;
     }
 
-    /* Admin 区域布局 */
-    #admin-section {
-      display: none;
-    }
-
-    .admin-header-row {
+    /* 管理区顶部统计 */
+    .admin-header {
       display: flex;
-      flex-wrap: wrap;
       justify-content: space-between;
-      align-items: flex-end;
-      gap: 10px;
-      margin-bottom: 16px;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
     }
-
-    .admin-header-row h2 {
-      margin: 0;
-      font-size: 20px;
-      color: var(--primary);
+    .admin-title {
+      font-size: 18px;
+      font-weight: 600;
     }
-    .admin-header-sub {
+    .admin-sub {
       font-size: 12px;
       color: var(--text-sub);
-      margin-top: 4px;
     }
 
-    /* 统计卡片 */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-    @media (max-width: 900px) {
-      .stats-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-    @media (max-width: 600px) {
-      .stats-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .stat-card {
-      padding: 12px 14px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, #ffffff, #f3f7ff);
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      box-shadow: 0 8px 20px rgba(148, 163, 184, 0.22);
+    .stats-row {
       display: flex;
-      flex-direction: column;
-      gap: 2px;
+      gap: 10px;
+      flex-wrap: wrap;
     }
-
+    .stat-card {
+      flex: 1;
+      min-width: 120px;
+      border-radius: 14px;
+      padding: 10px 12px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+    }
     .stat-label {
       font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
       color: var(--text-sub);
     }
     .stat-value {
-      font-size: 20px;
+      margin-top: 4px;
+      font-size: 18px;
       font-weight: 700;
-      color: var(--primary);
     }
     .stat-tag {
+      margin-top: 2px;
       font-size: 11px;
       color: var(--text-sub);
     }
-
-    /* 筛选 & 搜索 */
-    .filters-card {
-      margin-bottom: 16px;
+    .stat-updated {
+      font-size: 11px;
+      color: var(--text-sub);
+      margin-top: 4px;
+      text-align: right;
     }
 
+    /* 搜索 & 筛选 */
+    .filters-card {
+      margin-top: 8px;
+    }
     .filters-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
+      gap: 12px;
     }
-
     .filters-row .group {
       display: flex;
       flex-direction: column;
       gap: 4px;
+      min-width: 140px;
       font-size: 12px;
       color: var(--text-sub);
-      min-width: 160px;
     }
-
-    .filters-row select,
-    .filters-row input[type="text"] {
-      padding: 8px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      font-size: 13px;
-      outline: none;
-      background: #f8fafc;
-    }
-
-    .filters-row select:focus,
-    .filters-row input[type="text"]:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 1px rgba(0, 58, 117, 0.1);
-      background: #ffffff;
-    }
-
-    .filters-row .hint {
+    .hint {
       font-size: 11px;
       color: var(--text-sub);
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: #f9fafb;
+      border: 1px dashed #d1d5db;
     }
 
-    /* 表格区域 */
+    /* 表格 */
     .table-wrapper {
-      overflow: auto;
-      border-radius: var(--radius-lg);
-      border: 1px solid rgba(148, 163, 184, 0.6);
+      margin-top: 10px;
+      border-radius: 14px;
       background: #ffffff;
-      box-shadow: var(--shadow-soft);
+      border: 1px solid var(--border);
+      overflow: hidden;
     }
-
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 900px;
+      font-size: 12px;
     }
-
     thead {
-      background: #f3f6ff;
+      background: #f9fafb;
     }
-
     th,
     td {
-      padding: 10px 10px;
-      font-size: 13px;
+      padding: 8px 10px;
+      border-bottom: 1px solid #e5e7eb;
       text-align: left;
-      border-bottom: 1px solid #e2e8f0;
-      white-space: nowrap;
+      vertical-align: middle;
+      font-size: 12px;
+      color: #111827;
     }
-
     th {
-      color: var(--text-sub);
-      text-transform: uppercase;
-      font-size: 11px;
-      letter-spacing: 0.08em;
-      position: relative;
-      user-select: none;
+      font-weight: 600;
+      color: #4b5563;
+    }
+    tbody tr:hover {
+      background: #f3f4ff;
+      cursor: pointer;
     }
 
     th.sortable {
       cursor: pointer;
+      user-select: none;
     }
-
     th.sortable::after {
       content: "⇅";
       font-size: 10px;
       margin-left: 4px;
       color: #9ca3af;
     }
-
     th.sortable.sort-asc::after {
-      content: "▲";
-      color: var(--primary);
+      content: "↑";
+      color: #1d4ed8;
     }
     th.sortable.sort-desc::after {
-      content: "▼";
-      color: var(--primary);
-    }
-
-    tbody tr {
-      cursor: pointer;
-      transition: background 0.12s, transform 0.08s;
-    }
-
-    tbody tr:hover {
-      background: #f5f8ff;
-      transform: translateY(-1px);
+      content: "↓";
+      color: #1d4ed8;
     }
 
     td.actions-cell {
       white-space: nowrap;
     }
 
+    /* 状态 Badge */
     .badge {
       border-radius: 999px;
       padding: 3px 8px;
@@ -429,6 +354,7 @@
       background: #ef4444;
     }
 
+    /* 小按钮组 */
     .btn-sm {
       border-radius: 999px;
       padding: 4px 9px;
@@ -475,6 +401,14 @@
     .btn-sm-delete:hover {
       background: #fecaca;
     }
+    .btn-sm-copy {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+    .btn-sm-copy:hover {
+      background: #dbeafe;
+    }
 
     /* 底部分页 */
     .table-footer {
@@ -519,7 +453,6 @@
       color: var(--text-sub);
     }
 
-    /* Mobile 调整 */
     @media (max-width: 640px) {
       body {
         padding: 10px;
@@ -564,49 +497,50 @@
         <input type="email" id="email" placeholder="admin@example.com" />
       </div>
 
-      <div>
+      <div style="margin-bottom:10px;">
         <label for="password">Password</label>
         <input type="password" id="password" placeholder="••••••••" />
       </div>
 
-      <button id="login-btn">Login</button>
-      <p id="login-msg"></p>
+      <button class="btn-primary" id="login-btn">Login</button>
+      <div id="login-msg"></div>
     </div>
 
     <!-- 后台区域 -->
-    <div id="admin-section">
-      <!-- 概览 + 标题 -->
-      <div class="admin-header-row">
-        <div>
-          <h2>Car Listings Management</h2>
-          <div class="admin-header-sub">
-            审核 / 修改状态 / 删除 · Click row to view full car detail
+    <div id="admin-section" style="display:none;">
+      <!-- 顶部统计 -->
+      <div class="card">
+        <div class="admin-header">
+          <div>
+            <div class="admin-title">Car Listings Management</div>
+            <div class="admin-sub">
+              审核卖家发布的车辆 · Approve / Reject / Edit & Delete
+            </div>
           </div>
+          <div class="stat-updated" id="last-updated">Last updated: —</div>
         </div>
-        <div class="admin-header-sub" id="last-updated"></div>
-      </div>
 
-      <!-- 统计卡片 -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-label">Total Listings</div>
-          <div class="stat-value" id="stat-total">0</div>
-          <div class="stat-tag">所有车辆总数</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Pending Review</div>
-          <div class="stat-value" id="stat-pending">0</div>
-          <div class="stat-tag">等待审核的车辆</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Approved</div>
-          <div class="stat-value" id="stat-approved">0</div>
-          <div class="stat-tag">已通过可以展示</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Rejected</div>
-          <div class="stat-value" id="stat-rejected">0</div>
-          <div class="stat-tag">已拒绝或不合规</div>
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-label">Total</div>
+            <div class="stat-value" id="stat-total">0</div>
+            <div class="stat-tag">所有车辆</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Pending</div>
+            <div class="stat-value" id="stat-pending">0</div>
+            <div class="stat-tag">待审核 / 新提交</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Approved</div>
+            <div class="stat-value" id="stat-approved">0</div>
+            <div class="stat-tag">已通过可以展示</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Rejected</div>
+            <div class="stat-value" id="stat-rejected">0</div>
+            <div class="stat-tag">已拒绝或不合规</div>
+          </div>
         </div>
       </div>
 
@@ -639,7 +573,8 @@
           <div class="group">
             <span>&nbsp;</span>
             <div class="hint">
-              💡 单击表头可排序（Price / Mileage / ID）
+              💡 单击表头可排序（Price / Mileage / ID）<br />
+              点击行可打开车详情页面，右侧按钮用于审核、复制编辑链接、删除。
             </div>
           </div>
         </div>
@@ -773,48 +708,39 @@
       loadCars();
     });
 
-    // ===== 拉取车辆数据 =====
+    // ===== 加载 & 统计 =====
     async function loadCars() {
-      tbody.innerHTML = `
-        <tr id="loading-row">
-          <td colspan="11">Loading cars...</td>
-        </tr>
-      `;
-      tableInfoEl.textContent = "Loading...";
-
       try {
+        tbody.innerHTML = `
+          <tr id="loading-row">
+            <td colspan="11">Loading cars...</td>
+          </tr>
+        `;
         const res = await fetch("/api/getCars");
-        if (!res.ok) {
-          throw new Error("Failed to fetch cars");
-        }
-        const cars = await res.json();
-        allCars = Array.isArray(cars) ? cars : [];
+        const data = await res.json();
+        allCars = Array.isArray(data) ? data : [];
         updateStats();
-        populateCityOptions();
-        currentPage = 1;
+        buildCityOptions();
         applyFiltersAndRender();
-
-        const now = new Date();
         lastUpdatedEl.textContent =
-          "Last updated: " + now.toLocaleString();
+          "Last updated: " + new Date().toLocaleString();
       } catch (err) {
         console.error(err);
         tbody.innerHTML = `
           <tr>
-            <td colspan="11" style="color:#b91c1c;">
-              Failed to load cars. Please try again.
+            <td colspan="11" style="text-align:center; color:#b91c1c;">
+              Failed to load cars.
             </td>
           </tr>
         `;
-        tableInfoEl.textContent = "Error loading data";
       }
     }
 
     function updateStats() {
       const total = allCars.length;
-      const pending = allCars.filter((c) => (c.status || "pending") === "pending").length;
-      const approved = allCars.filter((c) => (c.status || "pending") === "approved").length;
-      const rejected = allCars.filter((c) => (c.status || "pending") === "rejected").length;
+      const pending = allCars.filter((c) => (c.status || "pending").toLowerCase() === "pending").length;
+      const approved = allCars.filter((c) => (c.status || "pending").toLowerCase() === "approved").length;
+      const rejected = allCars.filter((c) => (c.status || "pending").toLowerCase() === "rejected").length;
 
       statTotalEl.textContent = total;
       statPendingEl.textContent = pending;
@@ -822,10 +748,10 @@
       statRejectedEl.textContent = rejected;
     }
 
-    function populateCityOptions() {
+    function buildCityOptions() {
       const cities = new Set();
-      allCars.forEach((car) => {
-        if (car.city) cities.add(car.city);
+      allCars.forEach((c) => {
+        if (c.city) cities.add(c.city);
       });
       cityFilterSelect.innerHTML = `<option value="all">All Cities</option>`;
       Array.from(cities)
@@ -838,46 +764,39 @@
         });
     }
 
-    // ===== 过滤 & 排序 & 渲染 =====
     function applyFiltersAndRender() {
-      const searchLower = currentSearch.trim().toLowerCase();
-
       filteredCars = allCars.filter((car) => {
+        const searchText =
+          (car.car || "") +
+          " " +
+          (car.name || "") +
+          " " +
+          (car.phone || "") +
+          " " +
+          (car.city || "");
+
+        const matchSearch =
+          !currentSearch ||
+          searchText.toLowerCase().includes(currentSearch.toLowerCase());
+
         const status = (car.status || "pending").toLowerCase();
-        const city = (car.city || "").toLowerCase();
+        const matchStatus =
+          currentStatusFilter === "all" ||
+          status === currentStatusFilter.toLowerCase();
 
-        if (currentStatusFilter !== "all" && status !== currentStatusFilter) {
-          return false;
-        }
-        if (currentCityFilter !== "all" && city !== currentCityFilter.toLowerCase()) {
-          return false;
-        }
+        const matchCity =
+          currentCityFilter === "all" || car.city === currentCityFilter;
 
-        if (searchLower) {
-          const text =
-            (car.car || "") +
-            " " +
-            (car.name || "") +
-            " " +
-            (car.phone || "") +
-            " " +
-            (car.city || "") +
-            " " +
-            (car.id != null ? String(car.id) : "");
-          if (!text.toLowerCase().includes(searchLower)) {
-            return false;
-          }
-        }
-
-        return true;
+        return matchSearch && matchStatus && matchCity;
       });
 
-      sortCars();
+      sortFilteredCars();
+      currentPage = 1;
       renderTable();
       renderPagination();
     }
 
-    function sortCars() {
+    function sortFilteredCars() {
       const key = currentSortKey;
       const dir = currentSortDir === "asc" ? 1 : -1;
 
@@ -964,6 +883,9 @@
             <button class="btn-sm btn-sm-reject" data-action="set-rejected" data-id="${car.id}">
               Reject
             </button>
+            <button class="btn-sm btn-sm-copy" data-action="copy-link" data-id="${car.id}">
+              Edit Link
+            </button>
             <button class="btn-sm btn-sm-delete" data-action="delete" data-id="${car.id}">
               Delete
             </button>
@@ -1026,7 +948,6 @@
       });
       paginationEl.appendChild(prevBtn);
 
-      // 简化：最多显示 5 个页码窗口
       const maxPagesToShow = 5;
       let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
       let endPage = startPage + maxPagesToShow - 1;
@@ -1098,7 +1019,6 @@
         if (!key) return;
 
         if (currentSortKey === key) {
-          // 同一列再次点击，切换排序方向
           currentSortDir = currentSortDir === "asc" ? "desc" : "asc";
         } else {
           currentSortKey = key;
@@ -1119,7 +1039,6 @@
     tbody.addEventListener("click", async (e) => {
       const actionBtn = e.target.closest("button[data-action]");
       if (actionBtn) {
-        // 点击的是按钮：阻止触发行点击跳转
         e.stopPropagation();
         const id = Number(actionBtn.dataset.id);
         const action = actionBtn.dataset.action;
@@ -1133,11 +1052,12 @@
           await updateStatus(id, "rejected");
         } else if (action === "delete") {
           await deleteCar(id);
+        } else if (action === "copy-link") {
+          await copyEditLink(id);
         }
         return;
       }
 
-      // 行点击 → 跳转详情页
       const tr = e.target.closest("tr");
       if (!tr || !tr.dataset.id) return;
       const id = tr.dataset.id;
@@ -1156,7 +1076,6 @@
           alert("Update failed: " + (errBody.error || "Unknown error"));
           return;
         }
-        // 更新前端状态
         const car = allCars.find((c) => c.id === id);
         if (car) car.status = status;
         updateStats();
@@ -1184,13 +1103,29 @@
           alert("Delete failed: " + (result.error?.message || "Unknown error"));
           return;
         }
-        // 删除前端数据
         allCars = allCars.filter((c) => c.id !== id);
         updateStats();
         applyFiltersAndRender();
       } catch (err) {
         console.error(err);
         alert("Delete failed: network error");
+      }
+    }
+
+    async function copyEditLink(id) {
+      const url = `${window.location.origin}/car.html?id=${encodeURIComponent(
+        id
+      )}`;
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(url);
+          alert("编辑链接已复制到剪贴板：\n" + url);
+        } else {
+          window.prompt("Copy this edit link:", url);
+        }
+      } catch (err) {
+        console.error("Clipboard error:", err);
+        window.prompt("Copy this edit link:", url);
       }
     }
 
