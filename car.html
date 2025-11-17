@@ -1,163 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DrivingTrust - Safer C2C Car Selling</title>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 600px; margin: 20px auto; }
-    h1 { text-align: center; }
-    label { display: block; margin-top: 10px; }
-    input, select, textarea { width: 100%; padding: 8px; margin-top: 4px; }
-    button { margin-top: 15px; padding: 10px 15px; width: 100%; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Car Details — DrivingTrust</title>
+
+<style>
+  body { font-family: Arial; margin:0; background:#f5f5f5; padding-bottom:80px; }
+  .container { max-width:900px; margin:auto; padding:20px; }
+
+  .big-img {
+    width:100%; height:420px;
+    object-fit:cover; border-radius:10px;
+  }
+
+  .thumbs {
+    display:flex; margin-top:10px;
+  }
+  .thumbs img {
+    width:120px; height:90px;
+    object-fit:cover;
+    border-radius:6px; margin-right:10px;
+    cursor:pointer; border:2px solid transparent;
+    transition:0.2s;
+  }
+  .thumbs img:hover {
+    border:2px solid #003a75;
+  }
+
+  .title { font-size:26px; font-weight:bold; margin:20px 0 10px; color:#003a75; }
+  .section { background:white; padding:18px; border-radius:10px; margin-top:20px; box-shadow:0 3px 12px rgba(0,0,0,0.06); }
+
+  .row { font-size:16px; margin:6px 0; }
+  .price { font-size:30px; color:#27ae60; margin-top:10px; }
+</style>
+
 </head>
 <body>
-  <h1>Safer C2C Car Selling</h1>
+<div class="container">
 
-  <form id="car-form">
-    <label>
-      Full Name / 姓名
-      <input type="text" name="name" required />
-    </label>
+  <img id="big-img" class="big-img" src="">
 
-    <label>
-      Phone Number / 电话
-      <input type="tel" name="phone" required />
-    </label>
+  <div id="thumb-container" class="thumbs"></div>
 
-    <label>
-      City / 城市
-      <input type="text" name="city" required />
-    </label>
+  <div class="title" id="title"></div>
+  <div class="price" id="price"></div>
 
-    <label>
-      Car Details / 车辆信息
-      <input type="text" name="car" placeholder="例如：2022 Tesla Model Y Long Range" required />
-    </label>
+  <div class="section" id="info"></div>
 
-    <label>
-      Mileage (km) / 里程
-      <input type="number" name="mileage" required />
-    </label>
+</div>
 
-    <label>
-      Accident History? / 是否有事故
-      <select name="accident" required>
-        <option value="No">No / 无</option>
-        <option value="Yes">Yes / 有</option>
-      </select>
-    </label>
+<script>
+function getId() {
+  const u = new URLSearchParams(location.search);
+  return u.get("id");
+}
 
-    <label>
-      Accept platform inspection? / 是否接受平台验车
-      <select name="inspection" required>
-        <option value="Yes">Yes / 是</option>
-        <option value="No">No / 否</option>
-      </select>
-    </label>
+async function load() {
+  const id = getId();
+  const res = await fetch("/api/getCar?id=" + id);
+  const car = await res.json();
 
-    <label>
-      Expected Price / 期望售价
-      <input type="number" name="price" required />
-    </label>
+  document.getElementById("title").innerText = car.car;
+  document.getElementById("price").innerText = "$" + car.price;
 
-    <label>
-      Additional Notes / 备注
-      <textarea name="notes" rows="3"></textarea>
-    </label>
+  const info = document.getElementById("info");
+  info.innerHTML = `
+    <div class="row">Seller: ${car.name}</div>
+    <div class="row">Phone: ${car.phone}</div>
+    <div class="row">City: ${car.city}</div>
+    <div class="row">Mileage: ${car.mileage} km</div>
+    <div class="row">Accident: ${car.accident}</div>
+    <div class="row">Inspection: ${car.inspection}</div>
+    <div class="row">Notes: ${car.notes || "N/A"}</div>
+  `;
 
-    <label>
-      Car Photos / 车辆照片（可多选）
-      <input type="file" id="images" multiple accept="image/*" />
-    </label>
+  // 图片显示
+  const imgs = car.images || [];
+  const big = document.getElementById("big-img");
+  const thumbContainer = document.getElementById("thumb-container");
 
-    <button type="submit">Submit / 提交</button>
-  </form>
+  if (imgs.length > 0) {
+    big.src = imgs[0];
 
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-  <script>
-    // TODO: 这两个改成你自己的 Supabase 项目配置
-    const SUPABASE_URL = "https://ppgykjzirjrofrlgrgma.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwZ3lranppcmpyb2ZybGdyZ21hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyNTExODksImV4cCI6MjA3ODgyNzE4OX0.BdKunhUtaZUeDIl7SWN2McgzT0_BB7Bj5AjV-Xwsjy0";
-
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    async function uploadImages(files) {
-      const bucket = "car-images";
-      const urls = [];
-
-      for (const file of files) {
-        const fileExt = file.name.split(".").pop();
-        const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExt}`;
-        const filePath = `${fileName}`;
-
-        const { error: uploadError } = await supabaseClient
-          .storage
-          .from(bucket)
-          .upload(filePath, file);
-
-        if (uploadError) {
-          console.error("Upload error:", uploadError);
-          alert("图片上传失败，请稍后重试。");
-          return null;
-        }
-
-        const { data } = supabaseClient
-          .storage
-          .from(bucket)
-          .getPublicUrl(filePath);
-
-        urls.push(data.publicUrl);
-      }
-
-      return urls;
-    }
-
-    document.getElementById("car-form").addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const form = e.target;
-      const formData = new FormData(form);
-
-      const data = {
-        name: formData.get("name"),
-        phone: formData.get("phone"),
-        city: formData.get("city"),
-        car: formData.get("car"),
-        mileage: formData.get("mileage"),
-        accident: formData.get("accident"),
-        inspection: formData.get("inspection"),
-        price: formData.get("price"),
-        notes: formData.get("notes"),
-      };
-
-      const files = document.getElementById("images").files;
-
-      let imageUrls = [];
-      if (files && files.length > 0) {
-        imageUrls = await uploadImages(files);
-        if (!imageUrls) return; // 上传失败时停止
-      }
-
-      data.images = imageUrls;
-
-      const res = await fetch("/api/addCar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-
-      const result = await res.json();
-
-      if (res.ok) {
-        alert("提交成功！我们会尽快审核你的车辆信息。");
-        form.reset();
-      } else {
-        console.error(result);
-        alert("提交失败，请稍后重试。");
-      }
+    imgs.forEach(url => {
+      const img = document.createElement("img");
+      img.src = url;
+      img.onclick = () => big.src = url;
+      thumbContainer.appendChild(img);
     });
-  </script>
+  } else {
+    big.src = "https://placehold.co/800x500?text=No+Image";
+  }
+}
+
+load();
+</script>
+
 </body>
 </html>
