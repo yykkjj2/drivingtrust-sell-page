@@ -3,301 +3,605 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>DrivingTrust — Find Your Next Car</title>
+<title>DrivingTrust — Trusted C2C Car Marketplace</title>
 
 <style>
   :root {
-    --primary: #003a75;
-    --secondary: #1c5db5;
-    --bg: #f5f7fa;
-    --text-main: #1f2937;
-    --text-light: #6b7280;
-    --shadow: 0 6px 20px rgba(0,0,0,0.08);
-    --radius: 12px;
+    --dt-primary: #0b4ee6;
+    --dt-primary-soft: #e4ecff;
+    --dt-secondary: #11b395;
+    --dt-bg: #f3f6fb;
+    --dt-text-main: #111827;
+    --dt-text-sub: #6b7280;
+    --dt-card-radius: 16px;
+    --dt-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
   }
+
+  * { box-sizing: border-box; }
 
   body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text-main);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    background: radial-gradient(circle at top left,#e3edff,#f9fafb 40%,#eef2ff 100%);
+    color: var(--dt-text-main);
   }
+
+  a { text-decoration: none; color: inherit; }
 
   /* NAVBAR */
   .navbar {
-    background: white;
-    padding: 16px 26px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(18px);
+    background: linear-gradient(to right, rgba(255,255,255,0.96), rgba(244,246,255,0.96));
+    border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+  }
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 12px 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: var(--shadow);
-    position: sticky;
-    top: 0;
-    z-index: 20;
+    gap: 16px;
   }
   .nav-left {
     display: flex;
     align-items: center;
-    gap: 12px;
-    font-size: 22px;
-    font-weight: bold;
-    color: var(--primary);
+    gap: 10px;
   }
-  .nav-right a {
-    margin-left: 20px;
-    font-weight: 600;
-    color: var(--primary);
-    text-decoration: none;
+  .nav-logo {
+    width: 36px; height: 36px;
+    border-radius: 12px;
+    background: radial-gradient(circle at 20% 20%, #5ee7ff, #0b4ee6 50%, #020617 100%);
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-weight:700; font-size:18px;
+    box-shadow: 0 12px 30px rgba(15,23,42,0.35);
   }
-  .nav-right a:hover {
-    text-decoration: underline;
+  .nav-brand-text {
+    display:flex; flex-direction:column;
+  }
+  .nav-brand-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0b1120;
+  }
+  .nav-brand-sub {
+    font-size: 11px;
+    color: var(--dt-text-sub);
+  }
+
+  .nav-right {
+    display:flex; align-items:center; gap:14px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .nav-link {
+    padding: 7px 10px;
+    border-radius: 999px;
+    color: var(--dt-text-sub);
+  }
+  .nav-link:hover {
+    background: rgba(148, 163, 184, 0.16);
+    color: #020617;
+  }
+  .nav-link-primary {
+    padding: 7px 16px;
+    border-radius: 999px;
+    background: linear-gradient(135deg,#0b4ee6,#2563eb);
+    color: #fff;
+    box-shadow: 0 14px 30px rgba(37, 99, 235, 0.45);
+  }
+  .nav-link-primary:hover {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
   }
 
   /* HERO */
-  .hero {
-    background: white;
-    padding: 50px 20px 70px;
-    text-align: center;
-    box-shadow: var(--shadow);
-  }
-  .hero h1 {
-    font-size: 38px;
-    margin-bottom: 10px;
-    color: var(--primary);
-  }
-  .hero p {
-    font-size: 18px;
-    color: var(--text-light);
+  .hero-wrap {
+    max-width: 1200px;
+    margin: 22px auto 26px;
+    padding: 0 16px;
   }
 
-  /* SEARCH BAR */
-  .search-box {
-    max-width: 800px;
-    margin: 30px auto 0;
-    display: flex;
-    gap: 10px;
-    background: #ffffff;
-    padding: 18px;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
+  .hero {
+    display:grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2.4fr);
+    gap: 30px;
+    align-items:center;
   }
-  .search-box input, .search-box select {
-    flex: 1;
-    padding: 14px;
-    border: 1px solid #d1d5db;
-    border-radius: var(--radius);
-    font-size: 14px;
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; }
+  }
+
+  .hero-text h1 {
+    font-size: 34px;
+    line-height: 1.1;
+    margin: 0 0 12px;
+    color:#020617;
+  }
+  .hero-highlight {
+    background: linear-gradient(120deg,#0b4ee6,#11b395);
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+  .hero-text p {
+    margin:0;
+    font-size:15px;
+    color:var(--dt-text-sub);
+    max-width:480px;
+  }
+
+  .hero-badges {
+    display:flex; flex-wrap:wrap; gap:10px;
+    margin-top:18px;
+  }
+  .hero-badge {
+    font-size:11px;
+    padding:6px 10px;
+    border-radius:999px;
+    border:1px solid rgba(148,163,184,0.55);
+    background:rgba(255,255,255,0.85);
+    color:#111827;
+  }
+
+  /* MAIN SEARCH CARD */
+  .search-card {
+    margin-top:24px;
+    background: linear-gradient(135deg,rgba(255,255,255,0.98),rgba(240,249,255,0.98));
+    border-radius:22px;
+    padding:18px 18px 14px;
+    box-shadow: var(--dt-shadow);
+    border:1px solid rgba(148,163,184,0.4);
+  }
+  .search-title {
+    font-size:13px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--dt-text-sub);
+    margin-bottom:10px;
+  }
+  .search-row {
+    display:flex; flex-wrap:wrap; gap:10px;
+  }
+  .search-field {
+    flex:1; min-width:150px;
+    background:#f9fafb;
+    border-radius:999px;
+    padding:4px 10px;
+    border:1px solid #e5e7eb;
+    display:flex; align-items:center; gap:6px;
+  }
+  .search-field span {
+    font-size:12px; color:var(--dt-text-sub);
+    white-space:nowrap;
+  }
+  .search-field input,
+  .search-field select {
+    border:none;
+    background:transparent;
+    outline:none;
+    width:100%;
+    font-size:13px;
   }
   .search-btn {
-    background: var(--primary);
-    color: white;
-    padding: 14px 24px;
-    border: none;
-    border-radius: var(--radius);
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 600;
+    padding:10px 20px;
+    border-radius:999px;
+    border:none;
+    background:linear-gradient(135deg,#0b4ee6,#2563eb);
+    color:#fff;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+    box-shadow:0 12px 25px rgba(37,99,235,0.5);
+    white-space:nowrap;
   }
-  .search-btn:hover {
-    background: #00468f;
+  .search-btn:hover { filter:brightness(1.05); transform:translateY(-1px); }
+
+  /* HERO ILLUSTRATION CARD */
+  .hero-right {
+    background: radial-gradient(circle at 0% 0%,#22d3ee 0,#0b4ee6 35%,#020617 100%);
+    border-radius:26px;
+    padding:20px 18px;
+    color:#e5f0ff;
+    box-shadow:0 26px 60px rgba(15,23,42,0.75);
+    position:relative;
+    overflow:hidden;
+  }
+  .hero-right::after{
+    content:"";
+    position:absolute;
+    inset:-80px;
+    background:radial-gradient(circle at 120% -20%,rgba(255,255,255,0.19),transparent 55%);
+    pointer-events:none;
+  }
+  .hero-right-inner {
+    position:relative;
+    z-index:1;
+  }
+  .hero-right-title {
+    font-size:18px;
+    font-weight:600;
+    margin-bottom:6px;
+  }
+  .hero-right-sub {
+    font-size:13px;
+    color:#c7e0ff;
+    margin-bottom:14px;
+  }
+  .hero-right-line {
+    font-size:12px;
+    margin-top:4px;
   }
 
-  /* BRAND ICON GRID */
-  .brands {
-    max-width: 900px;
-    margin: 40px auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    text-align: center;
-    gap: 20px;
+  .hero-right-pill {
+    margin-top:14px;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:11px;
+    padding:6px 10px;
+    border-radius:999px;
+    background:rgba(15,23,42,0.75);
+    border:1px solid rgba(148,163,184,0.55);
+  }
+
+  /* POPULAR BRANDS */
+  .section {
+    max-width:1200px;
+    margin:0 auto;
+    padding:0 16px 30px;
+  }
+  .section-header {
+    margin-top:26px;
+    margin-bottom:10px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .section-title {
+    font-size:18px;
+    font-weight:600;
+  }
+  .section-sub { font-size:12px; color:var(--dt-text-sub); }
+
+  .brands-grid {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(110px,1fr));
+    gap:12px;
   }
   .brand-item {
-    background: white;
-    padding: 20px;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
+    background:#ffffff;
+    border-radius:16px;
+    padding:10px 12px;
+    box-shadow:0 10px 26px rgba(148,163,184,0.3);
+    border:1px solid rgba(148,163,184,0.45);
+    display:flex; flex-direction:column; gap:4px;
+    cursor:pointer;
   }
-  .brand-item:hover {
-    background: #eef5ff;
+  .brand-name {
+    font-size:14px;
+    font-weight:600;
+  }
+  .brand-tag {
+    font-size:11px;
+    color:var(--dt-text-sub);
   }
 
-  /* LISTINGS */
-  .section-title {
-    max-width: 1100px;
-    margin: 40px auto 10px;
-    font-size: 24px;
-    font-weight: bold;
-  }
+  /* CAR GRID */
   .car-grid {
-    max-width: 1100px;
-    margin: auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 22px;
-    padding-bottom: 50px;
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+    gap:18px;
   }
   .car-card {
-    background: white;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    overflow: hidden;
-    cursor: pointer;
-    transition: 0.2s;
+    background:#ffffff;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 16px 38px rgba(15,23,42,0.26);
+    border:1px solid rgba(148,163,184,0.45);
+    cursor:pointer;
+    transition:transform .16s ease, box-shadow .16s ease;
   }
   .car-card:hover {
-    transform: translateY(-4px);
+    transform:translateY(-4px);
+    box-shadow:0 22px 55px rgba(15,23,42,0.36);
   }
   .car-thumb {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
+    width:100%; height:190px;
+    object-fit:cover;
   }
-  .car-info {
-    padding: 16px;
+  .car-body {
+    padding:12px 14px 14px;
   }
-  .car-info h3 {
-    margin: 0;
-    font-size: 18px;
-    color: var(--primary);
+  .car-title {
+    font-size:15px;
+    font-weight:600;
+    color:#0f172a;
   }
-  .car-info .row {
-    margin-top: 6px;
-    color: var(--text-light);
+  .car-meta {
+    display:flex;
+    justify-content:space-between;
+    margin-top:6px;
+    font-size:12px;
+    color:var(--dt-text-sub);
   }
-  .price {
-    margin-top: 10px;
-    font-size: 20px;
-    color: #059669;
-    font-weight: bold;
+  .car-tagline {
+    font-size:12px;
+    margin-top:6px;
+    color:var(--dt-text-sub);
+  }
+  .car-price-row {
+    margin-top:10px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:13px;
+  }
+  .car-price {
+    font-size:18px;
+    font-weight:700;
+    color:#16a34a;
+  }
+  .car-cta {
+    font-size:11px;
+    padding:6px 10px;
+    border-radius:999px;
+    background:var(--dt-primary-soft);
+    color:var(--dt-primary);
+  }
+
+  /* FOOTER */
+  .footer {
+    border-top:1px solid rgba(148,163,184,0.4);
+    padding:14px 16px 18px;
+    font-size:11px;
+    color:var(--dt-text-sub);
+    text-align:center;
+  }
+
+  @media (max-width:600px){
+    .search-row { flex-direction:column; }
+    .hero-right { margin-top:6px; }
   }
 </style>
 </head>
-
 <body>
 
 <!-- NAVBAR -->
-<div class="navbar">
-  <div class="nav-left">DrivingTrust</div>
-  <div class="nav-right">
-    <a href="/">Browse Cars</a>
-    <a href="/sell.html">Sell My Car</a>
-    <a href="/admin">Admin</a>
+<header class="navbar">
+  <div class="nav-inner">
+    <div class="nav-left">
+      <div class="nav-logo">DT</div>
+      <div class="nav-brand-text">
+        <div class="nav-brand-title">DrivingTrust</div>
+        <div class="nav-brand-sub">Safer C2C auto deals in BC</div>
+      </div>
+    </div>
+    <nav class="nav-right">
+      <a class="nav-link" href="/listing.html">Browse Cars</a>
+      <a class="nav-link nav-link-primary" href="/sell.html">Sell My Car</a>
+      <a class="nav-link" href="/admin">Admin</a>
+    </nav>
   </div>
-</div>
+</header>
 
 <!-- HERO -->
-<div class="hero">
-  <h1>Find Your Next Car</h1>
-  <p>The safest C2C platform in Canada</p>
+<main class="hero-wrap">
+  <section class="hero">
+    <div class="hero-text">
+      <h1>
+        Buy & Sell Used Cars with
+        <span class="hero-highlight">Real Trust</span>.
+      </h1>
+      <p>DrivingTrust 帮你筛选车源、收集信息、统一审核，让普通人也能像车商一样安心买卖二手车。</p>
 
-  <!-- SEARCH -->
-  <div class="search-box">
-    <input id="search-input" type="text" placeholder="Search by brand, model, city, seller..." />
-    <select id="city-select">
-      <option value="all">All Cities</option>
-      <option>Richmond</option>
-      <option>Vancouver</option>
-      <option>Burnaby</option>
-      <option>Surrey</option>
-    </select>
-    <select id="price-select">
-      <option value="all">Any Price</option>
-      <option value="20000">Below 20k</option>
-      <option value="30000">Below 30k</option>
-      <option value="40000">Below 40k</option>
-      <option value="50000">Below 50k</option>
-    </select>
+      <div class="hero-badges">
+        <div class="hero-badge">✅ Seller identity & phone collected</div>
+        <div class="hero-badge">✅ Vehicle details & photos</div>
+        <div class="hero-badge">✅ Admin review workflow</div>
+      </div>
 
-    <button class="search-btn" onclick="applySearch()">Search</button>
-  </div>
-</div>
+      <!-- SEARCH CARD -->
+      <div class="search-card">
+        <div class="search-title">Quick search · 快速筛选车源</div>
+        <div class="search-row">
+          <div class="search-field">
+            <span>Keyword</span>
+            <input id="search-input" placeholder="Brand / model / city / seller" />
+          </div>
+          <div class="search-field">
+            <span>City</span>
+            <select id="city-filter">
+              <option value="all">All</option>
+              <option value="Richmond">Richmond</option>
+              <option value="Vancouver">Vancouver</option>
+              <option value="Burnaby">Burnaby</option>
+              <option value="Surrey">Surrey</option>
+            </select>
+          </div>
+          <div class="search-field">
+            <span>Max Price</span>
+            <select id="price-filter">
+              <option value="all">Any</option>
+              <option value="15000">≤ 15k</option>
+              <option value="25000">≤ 25k</option>
+              <option value="35000">≤ 35k</option>
+              <option value="50000">≤ 50k</option>
+            </select>
+          </div>
+          <button class="search-btn" type="button" onclick="applyHomeFilters()">Search</button>
+        </div>
+      </div>
+    </div>
+
+    <aside class="hero-right">
+      <div class="hero-right-inner">
+        <div class="hero-right-title">DrivingTrust Checkpoints</div>
+        <div class="hero-right-sub">What we record for each listing</div>
+        <div class="hero-right-line">• Seller name & phone</div>
+        <div class="hero-right-line">• City, mileage, price expectation</div>
+        <div class="hero-right-line">• Accident & inspection willingness</div>
+        <div class="hero-right-line">• Multiple real photos of the vehicle</div>
+
+        <div class="hero-right-pill">
+          🔒 Data hosted on Supabase · encrypted at rest
+        </div>
+      </div>
+    </aside>
+  </section>
+</main>
 
 <!-- POPULAR BRANDS -->
-<h2 class="section-title">Popular Brands</h2>
-<div class="brands">
-  <div class="brand-item" onclick="filterBrand('Toyota')">Toyota</div>
-  <div class="brand-item" onclick="filterBrand('Honda')">Honda</div>
-  <div class="brand-item" onclick="filterBrand('BMW')">BMW</div>
-  <div class="brand-item" onclick="filterBrand('Mercedes')">Mercedes</div>
-  <div class="brand-item" onclick="filterBrand('Audi')">Audi</div>
-  <div class="brand-item" onclick="filterBrand('Lexus')">Lexus</div>
-</div>
+<section class="section">
+  <div class="section-header">
+    <div>
+      <div class="section-title">Popular Brands · 热门品牌</div>
+      <div class="section-sub">点击品牌快速筛选同类车源</div>
+    </div>
+  </div>
 
-<!-- LATEST LISTINGS -->
-<h2 class="section-title">Latest Listings</h2>
-<div id="car-list" class="car-grid"></div>
+  <div class="brands-grid">
+    <div class="brand-item" onclick="filterBrand('Toyota')">
+      <div class="brand-name">Toyota</div>
+      <div class="brand-tag">可靠耐用 · 家用首选</div>
+    </div>
+    <div class="brand-item" onclick="filterBrand('Honda')">
+      <div class="brand-name">Honda</div>
+      <div class="brand-tag">省油稳妥 · 学生家庭</div>
+    </div>
+    <div class="brand-item" onclick="filterBrand('BMW')">
+      <div class="brand-name">BMW</div>
+      <div class="brand-tag">驾驶乐趣 · 性能优先</div>
+    </div>
+    <div class="brand-item" onclick="filterBrand('Mercedes')">
+      <div class="brand-name">Mercedes-Benz</div>
+      <div class="brand-tag">豪华质感 · 商务出行</div>
+    </div>
+    <div class="brand-item" onclick="filterBrand('Audi')">
+      <div class="brand-name">Audi</div>
+      <div class="brand-tag">科技感 · 全时四驱</div>
+    </div>
+    <div class="brand-item" onclick="filterBrand('Lexus')">
+      <div class="brand-name">Lexus</div>
+      <div class="brand-tag">豪华省心 · 保值王</div>
+    </div>
+  </div>
+</section>
 
+<!-- FEATURED LISTINGS -->
+<section class="section">
+  <div class="section-header">
+    <div>
+      <div class="section-title">Latest Listings · 最新车源</div>
+      <div class="section-sub" id="result-count-text">Loading...</div>
+    </div>
+    <a href="/listing.html" class="section-sub" style="cursor:pointer;">View all &raquo;</a>
+  </div>
+
+  <div id="home-car-grid" class="car-grid"></div>
+</section>
+
+<footer class="footer">
+  DrivingTrust · Vancouver based C2C used car helper · Built with Supabase & Vercel
+</footer>
 
 <script>
-// 载入车辆
-let ALL_CARS = [];
+  let HOME_ALL_CARS = [];
 
-async function loadCars() {
-  const res = await fetch("/api/getCars");
-  ALL_CARS = await res.json();
-  renderCars(ALL_CARS);
-}
+  async function loadHomeCars() {
+    try {
+      const res = await fetch("/api/getCars");
+      const data = await res.json();
+      HOME_ALL_CARS = Array.isArray(data) ? data : [];
+      // 默认只取前 12 条
+      renderHomeCars(HOME_ALL_CARS.slice(0, 12));
+    } catch (e) {
+      console.error(e);
+      document.getElementById("home-car-grid").innerHTML =
+        "<div>Failed to load listings.</div>";
+    }
+  }
 
-function renderCars(list) {
-  const container = document.getElementById("car-list");
-  container.innerHTML = "";
+  function renderHomeCars(list) {
+    const box = document.getElementById("home-car-grid");
+    const countText = document.getElementById("result-count-text");
+    box.innerHTML = "";
 
-  list.forEach(car => {
-    const img = car.images?.[0] || "https://placehold.co/600x400?text=No+Image";
+    countText.textContent = list.length
+      ? `Showing ${list.length} cars · 共 ${list.length} 条车源`
+      : "No cars found · 暂无车源";
 
-    const card = document.createElement("div");
-    card.className = "car-card";
-    card.onclick = () => window.location.href = "/car.html?id=" + car.id;
+    list.forEach((car) => {
+      const img =
+        (car.images && car.images[0]) ||
+        "https://placehold.co/640x400?text=No+Image";
 
-    card.innerHTML = `
-      <img class="car-thumb" src="${img}">
-      <div class="car-info">
-        <h3>${car.car}</h3>
-        <div class="row">City: ${car.city}</div>
-        <div class="row">Mileage: ${car.mileage} km</div>
-        <div class="row">Seller: ${car.name}</div>
-        <div class="price">$${car.price}</div>
-      </div>
-    `;
+      const card = document.createElement("article");
+      card.className = "car-card";
+      card.onclick = () =>
+        (window.location.href = "/car.html?id=" + encodeURIComponent(car.id));
 
-    container.appendChild(card);
-  });
-}
+      card.innerHTML = `
+        <img class="car-thumb" src="${img}" alt="Car image" />
+        <div class="car-body">
+          <div class="car-title">${car.car || "Unknown vehicle"}</div>
+          <div class="car-meta">
+            <span>${car.city || "Unknown city"}</span>
+            <span>${car.mileage ? Number(car.mileage).toLocaleString() + " km" : "-"}</span>
+          </div>
+          <div class="car-tagline">
+            Seller: ${car.name || "-"} · ${
+        car.accident === "Yes" ? "Accident history" : "No major accident"
+      }
+          </div>
+          <div class="car-price-row">
+            <div class="car-price">$${car.price || "—"}</div>
+            <div class="car-cta">View details</div>
+          </div>
+        </div>
+      `;
+      box.appendChild(card);
+    });
+  }
 
-function applySearch() {
-  const keyword = document.getElementById("search-input").value.toLowerCase();
-  const city = document.getElementById("city-select").value;
-  const maxPrice = document.getElementById("price-select").value;
+  function applyHomeFilters() {
+    const kw = document.getElementById("search-input").value.trim().toLowerCase();
+    const city = document.getElementById("city-filter").value;
+    const maxPrice = document.getElementById("price-filter").value;
 
-  let filtered = ALL_CARS.filter(car => {
-    const matchKeyword =
-      car.car.toLowerCase().includes(keyword) ||
-      car.city.toLowerCase().includes(keyword) ||
-      car.name.toLowerCase().includes(keyword);
+    let list = HOME_ALL_CARS.slice();
 
-    const matchCity = (city === "all") || (car.city === city);
+    list = list.filter((car) => {
+      const text =
+        (car.car || "") +
+        " " +
+        (car.city || "") +
+        " " +
+        (car.name || "") +
+        " " +
+        (car.phone || "");
+      const matchKw = !kw || text.toLowerCase().includes(kw);
 
-    const matchPrice =
-      maxPrice === "all" || Number(car.price) <= Number(maxPrice);
+      const matchCity = city === "all" || car.city === city;
 
-    return matchKeyword && matchCity && matchPrice;
-  });
+      const matchPrice =
+        maxPrice === "all" || Number(car.price || 0) <= Number(maxPrice);
 
-  renderCars(filtered);
-}
+      return matchKw && matchCity && matchPrice;
+    });
 
-function filterBrand(brand) {
-  const filtered = ALL_CARS.filter(car =>
-    car.car.toLowerCase().includes(brand.toLowerCase())
-  );
-  renderCars(filtered);
-}
+    renderHomeCars(list.slice(0, 20));
+  }
 
-loadCars();
+  function filterBrand(brand) {
+    document.getElementById("search-input").value = brand;
+    applyHomeFilters();
+  }
+
+  loadHomeCars();
 </script>
-
 </body>
 </html>
