@@ -21,6 +21,7 @@
   </style>
 </head>
 <body>
+
   <h1>DrivingTrust Admin Panel</h1>
 
   <!-- 登录区域 -->
@@ -60,15 +61,21 @@
           <th>Actions</th>
         </tr>
       </thead>
+
+      <!-- 动态插入 -->
       <tbody id="car-list"></tbody>
+
     </table>
   </div>
 
+  <!-- Supabase JS -->
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
   <script>
-    // TODO: 换成你自己的 Supabase 项目配置
+    // 你自己的 Supabase 项目
     const SUPABASE_URL = "https://ppgykjzirjrofrlgrgma.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwZ3lranppcmpyb2ZybGdyZ21hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyNTExODksImV4cCI6MjA3ODgyNzE4OX0.BdKunhUtaZUeDIl7SWN2McgzT0_BB7Bj5AjV-Xwsjy0";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBwZ3lranppcmpyb2ZybGdyZ21hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyNTExODksImV4cCI6MjA3ODgyNzE4OX0.BdKunhUtaZUeDIl7SWN2McgzT0_BB7Bj5AjV-Xwsjy0";
 
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -76,13 +83,11 @@
     const adminSection = document.getElementById("admin-section");
     const loginMsg = document.getElementById("login-msg");
 
+    // 自动登录检查
     async function checkSession() {
       const { data } = await supabaseClient.auth.getUser();
-      if (data && data.user) {
-        showAdmin();
-      } else {
-        showLogin();
-      }
+      if (data && data.user) showAdmin();
+      else showLogin();
     }
 
     function showLogin() {
@@ -96,38 +101,46 @@
       loadCars();
     }
 
+    // 登录按钮
     document.getElementById("login-btn").addEventListener("click", async () => {
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
       loginMsg.textContent = "";
 
-      const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      const { error } = await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
 
-      if (error) {
-        loginMsg.textContent = "Login failed: " + error.message;
-      } else {
-        showAdmin();
-      }
+      if (error) loginMsg.textContent = "Login failed: " + error.message;
+      else showAdmin();
     });
 
+    // 退出登录
     document.getElementById("logout-btn").addEventListener("click", async () => {
       await supabaseClient.auth.signOut();
       showLogin();
     });
 
+    // 加载车辆
     async function loadCars() {
       const res = await fetch("/api/getCars");
       const cars = await res.json();
-      const tbody = document.getElementById("car-list");
-      tbody.innerHTML = "";
 
-      cars.forEach(car => {
+      const tbody = document.getElementById("car-list");
+      tbody.innerHTML = ""; // 清空
+
+      cars.forEach((car) => {
         const tr = document.createElement("tr");
 
-        const status = car.status || "pending";
+        // 整行可点击 → 跳转到 car.html?id=xxx
+        tr.style.cursor = "pointer";
+        tr.addEventListener("click", () => {
+          window.location.href = "/car.html?id=" + car.id;
+        });
 
-        const imagesCount =
-          car.images && Array.isArray(car.images) ? car.images.length : 0;
+        const status = car.status || "pending";
+        const imagesCount = car.images?.length || 0;
 
         tr.innerHTML = `
           <td>${car.id}</td>
@@ -139,10 +152,13 @@
           <td>${car.price}</td>
           <td><span class="status ${status}">${status}</span></td>
           <td>${imagesCount}</td>
-          <td>
+
+          <!-- 防止点击按钮触发行跳转 -->
+          <td onclick="event.stopPropagation()">
             <button onclick="updateStatus(${car.id}, 'pending')">Pending</button>
             <button onclick="updateStatus(${car.id}, 'approved')">Approve</button>
             <button onclick="updateStatus(${car.id}, 'rejected')">Reject</button>
+            <button style="background:#e74c3c;color:white;" onclick="deleteCar(${car.id})">Delete</button>
           </td>
         `;
 
@@ -150,19 +166,42 @@
       });
     }
 
+    // 修改状态
     async function updateStatus(id, status) {
       await fetch("/api/updateStatus", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, status }),
+        body: JSON.stringify({ id, status })
       });
       alert("Status updated to " + status);
       loadCars();
     }
 
-    // 暴露到全局，让 HTML 里的 onclick 能访问
-    window.updateStatus = updateStatus;
+    // 删除车辆
+    async function deleteCar(id) {
+      if (!confirm("Are you sure you want to delete this listing?")) return;
 
+      const res = await fetch("/api/deleteCar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id })
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+        alert("Car deleted successfully!");
+        loadCars();
+      } else {
+        alert("Delete failed: " + (result.error?.message || "Unknown error"));
+      }
+    }
+
+    // 将函数暴露到全局
+    window.updateStatus = updateStatus;
+    window.deleteCar = deleteCar;
+
+    // 初始化登录检查
     checkSession();
   </script>
 </body>
