@@ -1,52 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Car Listings</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Car Listings — DrivingTrust</title>
+
 <style>
-  body { font-family: Arial; background:#f5f5f5; padding:20px; }
+  body { font-family: Arial, sans-serif; background: #f7f7f7; margin:0; padding:20px; }
+  h1 { text-align:center; margin-bottom:30px; color:#003a75; }
+
   .card {
-    background:white;
-    padding:15px;
-    margin-bottom:15px;
-    border-radius:8px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    background:white; 
+    border-radius:12px;
+    padding:16px;
+    margin-bottom:24px;
+    display:flex;
+    box-shadow:0 3px 12px rgba(0,0,0,0.08);
     cursor:pointer;
+    transition:0.2s;
   }
-  .card:hover { background:#f0f8ff; }
+  .card:hover { transform:scale(1.01); }
+
+  .thumb {
+    width:220px; height:150px; 
+    border-radius:8px; 
+    object-fit:cover;
+    margin-right:20px;
+  }
+
+  .info { flex:1; }
+
+  .title { font-size:18px; font-weight:bold; color:#003a75; }
+  .row { margin:6px 0; color:#333; }
+
+  .price {
+    font-size:20px; font-weight:bold; color:#27ae60; margin-top:10px;
+  }
 </style>
+
 </head>
 <body>
+<h1>Car Listings</h1>
 
-<h2>Car Listings</h2>
 <div id="list"></div>
 
 <script>
 async function loadCars() {
   const res = await fetch("/api/getCars");
   const cars = await res.json();
-
   const list = document.getElementById("list");
+
   list.innerHTML = "";
 
   cars.forEach(car => {
-    const div = document.createElement("div");
-    div.className = "card";
-    div.innerHTML = `
-      <b>${car.car}</b><br>
-      City: ${car.city}<br>
-      Mileage: ${car.mileage} km<br>
-      Price: ${car.price}
+    const firstImg = car.images && car.images.length > 0 ? car.images[0] : "https://placehold.co/400x300?text=No+Image";
+
+    const card = document.createElement("div");
+    card.className = "card";
+    card.onclick = () => location.href = `/car.html?id=${car.id}`;
+
+    card.innerHTML = `
+      <img src="${firstImg}" class="thumb" />
+
+      <div class="info">
+        <div class="title">${car.car}</div>
+        <div class="row">City: ${car.city}</div>
+        <div class="row">Mileage: ${car.mileage} km</div>
+        <div class="row">Seller: ${car.name}</div>
+        <div class="price">$${car.price}</div>
+      </div>
     `;
-    div.onclick = () => {
-      window.location.href = "/car.html?id=" + car.id;
-    };
-    list.appendChild(div);
+
+    list.appendChild(card);
   });
 }
 
 loadCars();
 </script>
-
 </body>
 </html>
