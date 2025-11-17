@@ -1,3 +1,4 @@
+// api/updateStatus.js
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -17,7 +18,10 @@ export default async function handler(req, res) {
     .update({ status })
     .eq("id", id);
 
-  if (error) return res.status(400).json({ error });
+  if (error) {
+    console.error("Error updating status:", error);
+    return res.status(400).json({ error });
+  }
 
-  res.status(200).json({ message: "Status updated" });
+  return res.status(200).json({ message: "Status updated" });
 }
