@@ -1,82 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DrivingTrust - Car Listings</title>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 900px; margin: 20px auto; }
-    h1 { text-align: center; }
-    .card {
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      padding: 10px;
-      margin-bottom: 15px;
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-    .thumb {
-      width: 140px;
-      height: 90px;
-      object-fit: cover;
-      border-radius: 4px;
-      background: #f2f2f2;
-      flex-shrink: 0;
-    }
-    .info h2 { margin: 0 0 5px; font-size: 18px; }
-    .info p { margin: 2px 0; font-size: 14px; }
-  </style>
+<meta charset="UTF-8">
+<title>Car Listings</title>
+<style>
+  body { font-family: Arial; background:#f5f5f5; padding:20px; }
+  .card {
+    background:white;
+    padding:15px;
+    margin-bottom:15px;
+    border-radius:8px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    cursor:pointer;
+  }
+  .card:hover { background:#f0f8ff; }
+</style>
 </head>
 <body>
-  <h1>Car Listings</h1>
 
-  <div id="list"></div>
+<h2>Car Listings</h2>
+<div id="list"></div>
 
-  <script>
-    async function loadCars() {
-      const res = await fetch("/api/getCars");
-      const cars = await res.json();
+<script>
+async function loadCars() {
+  const res = await fetch("/api/getCars");
+  const cars = await res.json();
 
-      const list = document.getElementById("list");
-      list.innerHTML = "";
+  const list = document.getElementById("list");
+  list.innerHTML = "";
 
-      const visibleCars = cars.filter(c => c.status === "approved");
+  cars.forEach(car => {
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `
+      <b>${car.car}</b><br>
+      City: ${car.city}<br>
+      Mileage: ${car.mileage} km<br>
+      Price: ${car.price}
+    `;
+    div.onclick = () => {
+      window.location.href = "/car.html?id=" + car.id;
+    };
+    list.appendChild(div);
+  });
+}
 
-      if (!visibleCars.length) {
-        list.textContent = "No approved cars yet.";
-        return;
-      }
+loadCars();
+</script>
 
-      visibleCars.forEach(car => {
-        const card = document.createElement("div");
-        card.className = "card";
-
-        const firstImage =
-          car.images && Array.isArray(car.images) && car.images.length > 0
-            ? car.images[0]
-            : null;
-
-        card.innerHTML = `
-          ${
-            firstImage
-              ? `<img class="thumb" src="${firstImage}" alt="${car.car}">`
-              : `<div class="thumb"></div>`
-          }
-          <div class="info">
-            <h2>${car.car}</h2>
-            <p>Owner: ${car.name}</p>
-            <p>City: ${car.city}</p>
-            <p>Mileage: ${car.mileage} km</p>
-            <p>Price: ${car.price}</p>
-          </div>
-        `;
-
-        list.appendChild(card);
-      });
-    }
-
-    loadCars();
-  </script>
 </body>
 </html>
